@@ -1,9 +1,17 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const appOrigin = Deno.env.get("APP_ORIGIN") ?? "";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": appOrigin,
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Vary": "Origin",
+};
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }
 
@@ -20,7 +28,7 @@ Deno.serve(async (request) => {
   const receivedToken = request.headers.get("x-callback-token") ?? "";
   if (!receivedToken || receivedToken !== expectedToken) return json({ error: "Invalid callback token" }, 401);
 
-  let payload: { external_id?: string; id?: string; status?: string };
+  let payload: { external_id?: string; id?: string; status?: string; amount?: number };
   try {
     payload = await request.json();
   } catch {
@@ -31,11 +39,13 @@ Deno.serve(async (request) => {
   const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
 
   if (payload.status === "PAID") {
+    if (!payload.id || !Number.isInteger(payload.amount)) return json({ error: "Missing invoice verification fields" }, 400);
     const { error } = await admin.rpc("apply_paid_xendit_invoice", {
       p_external_id: payload.external_id,
-      p_invoice_id: payload.id ?? "",
+      p_invoice_id: payload.id,
+      p_amount: payload.amount,
     });
-    if (error) return json({ error: "Could not activate subscription" }, 500);
+    if (error) return json({ error: "Could not verify or activate subscription" }, 500);
   } else if (payload.status === "EXPIRED") {
     await admin.from("eduplan_payment_orders")
       .update({ status: "EXPIRED" })
