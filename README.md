@@ -1,61 +1,25 @@
 # School & Community Platform MVP
 
-Platform web untuk manajemen sekolah dan komunitas terpadu dengan fitur:
+Express and PostgreSQL foundation for member onboarding/approval, role-based login, QR attendance, teacher AI drafts, and finance transactions.
 
-- autentikasi dan RBAC
-- pendaftaran anggota
-- absensi QR ID Card
-- AI guru untuk modul ajar, soal, dan rubrik
-- dashboard dasar
+## Local setup
 
-## Quick start
+1. Copy `.env.example` to `.env`. Set a random `JWT_SECRET` of at least 32 characters and leave `DEFAULT_ORG_ID` empty until you create the organization.
+2. Start PostgreSQL: `docker compose up -d`.
+3. Apply schema: `psql "$DATABASE_URL" -f database-schema.sql`.
+4. Create an organization in the database, then put its UUID into `DEFAULT_ORG_ID` in `.env`.
+5. Install dependencies: `npm install`.
+6. Create the first admin: `node scripts/create-first-admin.js`.
+7. Start the server: `npm run dev`.
 
-1. Copy env example:
+Open dashboard at `/`, member registration at `/pendaftaran-member-upload.html`, and scanner at `/scanner-absensi.html`.
 
-```bash
-cp .env.example .env
-```
+API routes include `/api/auth/login`, `/api/auth/me`, `/api/members/register`, `/api/members/pending`, `/api/members/:id/approve`, `/api/attendance/sessions`, `/api/attendance/scan`, `/api/ai-tools/generate`, and `/api/finance/`.
 
-2. Start PostgreSQL:
+## Tests
 
-```bash
-docker compose up -d
-```
+Run `npm test` for unit tests. These do not replace integration tests against PostgreSQL or provider credentials.
 
-3. Add organization data:
+## Scope and production caveats
 
-```sql
-INSERT INTO organizations (name, slug)
-VALUES ('Sekolah Demo', 'sekolah-demo');
-```
-
-4. Set DEFAULT_ORG_ID in `.env` to the UUID generated in the insert result.
-
-5. Apply schema:
-
-```bash
-psql "postgresql://school:school_local_password@localhost:5432/school_platform" -f database-schema.sql
-```
-
-6. Create first admin:
-
-```bash
-node scripts/create-first-admin.js
-```
-
-7. Start server:
-
-```bash
-npm install
-npm run dev
-```
-
-Open:
-- `http://localhost:3000/`
-- `http://localhost:3000/pendaftaran-member-upload.html`
-- `http://localhost:3000/scanner-absensi.html`
-
-## Notes
-
-- This is a foundation MVP, not a full production-ready system.
-- Payment integration, social login, export PDF/DOCX, and file storage integration must be implemented as a next phase.
+This is an MVP. Social login, payment-provider verification, private document download authorization, notifications, and PDF/DOCX export are not implemented. Do not deploy with real student/financial data until integration/security tests, HTTPS, backups, secrets, and operational monitoring are configured.

@@ -1,3 +1,10 @@
-# School Community Platform
-
-This project is intentionally minimal and is intended as a starting point for a school/community management platform.
+# Dependencies, secrets, and generated files
+node_modules/
+.env
+.env.*
+!.env.example
+storage/
+uploads/
+coverage/
+*.log
+.DS_Store
