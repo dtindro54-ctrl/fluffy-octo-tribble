@@ -12,7 +12,7 @@
     <a class="text-sm text-indigo-700 hover:underline" href="./index-v2.html">← Kembali ke EduPlan AI</a>
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
       <h1 class="text-2xl font-bold">Langganan EduPlan AI</h1>
-      <p class="text-sm text-slate-600 mt-2">Masuk atau buat akun untuk membeli paket melalui pembayaran Xendit.</p>
+      <p class="text-sm text-slate-600 mt-2">Pilih paketmu, lalu bayar melalui Virtual Account Xendit. Pembayaran hanya via VA, dengan nama rekening <strong>Indro DT Karyanto</strong>.</p>
       <div id="setup-warning" class="hidden bg-amber-50 border border-amber-300 text-amber-900 rounded-lg p-3 mt-4 text-sm"></div>
       <div id="auth-panel" class="grid md:grid-cols-2 gap-3 mt-5">
         <label class="text-sm">Email
@@ -35,14 +35,28 @@
         <p class="text-sm font-semibold text-slate-500">PREMIUM BULANAN</p>
         <p class="text-3xl font-bold mt-2">Rp199.000<span class="text-sm font-normal text-slate-500"> / bulan</span></p>
         <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu bulan sejak pembayaran berhasil.</p>
-        <button data-plan="monthly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar bulanan</button>
+        <button data-plan="monthly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Bulanan</button>
       </article>
       <article class="bg-white rounded-2xl shadow-sm border border-indigo-300 p-5">
         <p class="text-sm font-semibold text-indigo-600">PREMIUM TAHUNAN</p>
         <p class="text-3xl font-bold mt-2">Rp350.000<span class="text-sm font-normal text-slate-500"> / tahun</span></p>
         <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu tahun sejak pembayaran berhasil.</p>
-        <button data-plan="yearly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar tahunan</button>
+        <button data-plan="yearly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Tahunan</button>
       </article>
+    </section>
+
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
+      <h2 class="font-bold text-lg">Metode pembayaran: Virtual Account (VA) saja</h2>
+      <ul class="text-sm text-slate-600 mt-3 space-y-2">
+        <li>• BNI</li>
+        <li>• BRI</li>
+        <li>• Bank Jago</li>
+        <li>• Superbank</li>
+      </ul>
+      <p class="text-sm text-slate-700 mt-4">
+        Nama rekening penerima: <strong>Indro DT Karyanto</strong>
+      </p>
+      <p class="text-xs text-slate-500 mt-2">Pembayaran akan diproses melalui Xendit Invoice untuk nomor VA yang unik per transaksi.</p>
     </section>
 
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
@@ -55,8 +69,6 @@
   </main>
 
   <script>
-    // Isi nilai ini dari project Supabase Anda. URL dan anon key boleh berada di frontend;
-    // service role key dan Xendit secret key hanya boleh berada di Edge Function secrets.
     const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
     const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
     const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");

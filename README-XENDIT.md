@@ -2,6 +2,13 @@
 
 Checkout scaffold uses Xendit invoices and Supabase Auth/Postgres/Edge Functions. Prices are Rp199,000 for one month and Rp350,000 for one year. Renewals are manual; this does not create automatic recurring charges.
 
+## Payment method
+
+- Payment method is Virtual Account (VA) only.
+- Supported VA banks: BNI, BRI, Bank Jago, Superbank.
+- The account holder name for the VA is: Indro DT Karyanto.
+- The production checkout should request a unique Xendit VA/Invoice per transaction and verify the callback with `x-callback-token`.
+
 ## Generation quotas
 
 - Free trial: 1 AI generation per account, one time.
@@ -41,7 +48,7 @@ Checkout scaffold uses Xendit invoices and Supabase Auth/Postgres/Edge Functions
 ## Payment and quota flow
 
 - Signed-in user chooses a plan; `create-xendit-invoice` selects the price server-side, saves a pending order, then requests an invoice.
-- User pays through the Xendit invoice URL.
+- User pays through the Xendit invoice/VA URL.
 - Xendit calls `xendit-webhook`; the callback token is checked. Only `PAID` activates/extends access. Repeated paid notifications are idempotent.
 - To reserve one generation, the authenticated client calls `consume-generation` before generation. A production `generate-ai` endpoint should perform this quota call and the Gemini request in the same server-side flow so users cannot skip the quota endpoint.
 
