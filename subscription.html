@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Langganan EduPlan AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+  <main class="max-w-3xl mx-auto p-5 md:p-10">
+    <a class="text-sm text-indigo-700 hover:underline" href="./index-v2.html">← Kembali ke EduPlan AI</a>
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
+      <h1 class="text-2xl font-bold">Langganan EduPlan AI</h1>
+      <p class="text-sm text-slate-600 mt-2">Masuk atau buat akun untuk membeli paket melalui pembayaran Xendit.</p>
+      <div id="setup-warning" class="hidden bg-amber-50 border border-amber-300 text-amber-900 rounded-lg p-3 mt-4 text-sm"></div>
+      <div id="auth-panel" class="grid md:grid-cols-2 gap-3 mt-5">
+        <label class="text-sm">Email
+          <input id="email" type="email" autocomplete="email" class="block w-full border rounded-lg p-2 mt-1" required />
+        </label>
+        <label class="text-sm">Kata sandi
+          <input id="password" type="password" autocomplete="current-password" minlength="8" class="block w-full border rounded-lg p-2 mt-1" required />
+        </label>
+        <div class="md:col-span-2 flex flex-wrap gap-2">
+          <button id="sign-in" class="bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-semibold">Masuk</button>
+          <button id="sign-up" class="bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Buat akun</button>
+          <button id="sign-out" class="hidden bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Keluar</button>
+        </div>
+      </div>
+      <p id="message" role="status" class="text-sm mt-4"></p>
+    </section>
+
+    <section id="plans" class="grid md:grid-cols-2 gap-4 mt-5">
+      <article class="bg-white rounded-2xl shadow-sm border p-5">
+        <p class="text-sm font-semibold text-slate-500">PREMIUM BULANAN</p>
+        <p class="text-3xl font-bold mt-2">Rp199.000<span class="text-sm font-normal text-slate-500"> / bulan</span></p>
+        <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu bulan sejak pembayaran berhasil.</p>
+        <button data-plan="monthly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar bulanan</button>
+      </article>
+      <article class="bg-white rounded-2xl shadow-sm border border-indigo-300 p-5">
+        <p class="text-sm font-semibold text-indigo-600">PREMIUM TAHUNAN</p>
+        <p class="text-3xl font-bold mt-2">Rp350.000<span class="text-sm font-normal text-slate-500"> / tahun</span></p>
+        <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu tahun sejak pembayaran berhasil.</p>
+        <button data-plan="yearly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar tahunan</button>
+      </article>
+    </section>
+
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
+      <div class="flex flex-wrap justify-between items-center gap-2">
+        <h2 class="font-bold">Status langganan</h2>
+        <button id="refresh-status" class="text-sm text-indigo-700 hover:underline">Perbarui status</button>
+      </div>
+      <p id="subscription-status" class="text-sm text-slate-600 mt-2">Masuk untuk melihat status.</p>
+    </section>
+  </main>
+
+  <script>
+    // Isi nilai ini dari project Supabase Anda. URL dan anon key boleh berada di frontend;
+    // service role key dan Xendit secret key hanya boleh berada di Edge Function secrets.
+    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
+    const warning = document.getElementById("setup-warning");
+    if (!configured) {
+      warning.textContent = "Halaman checkout belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di subscription.html, lalu deploy fungsi Supabase dan atur secrets sesuai README.";
+      warning.classList.remove("hidden");
+      document.querySelectorAll("button").forEach((button) => { button.disabled = true; button.classList.add("opacity-50", "cursor-not-allowed"); });
+    }
+
+    const supabase = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const message = document.getElementById("message");
+    const status = document.getElementById("subscription-status");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    function setMessage(text, isError) {
+      message.textContent = text;
+      message.className = "text-sm mt-4 " + (isError ? "text-rose-700" : "text-emerald-700");
+    }
+
+    async function refreshSessionUI() {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      document.getElementById("sign-in").classList.toggle("hidden", !!session);
+      document.getElementById("sign-up").classList.toggle("hidden", !!session);
+      document.getElementById("sign-out").classList.toggle("hidden", !session);
+      if (!session) {
+        status.textContent = "Masuk untuk melihat status.";
+        return;
+      }
+      emailInput.value = session.user.email || "";
+      const { data, error } = await supabase.from("eduplan_subscriptions")
+        .select("plan,status,current_period_end")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+      if (error) {
+        status.textContent = "Gagal membaca status langganan: " + error.message;
+        return;
+      }
+      if (!data || data.status !== "active" || new Date(data.current_period_end) <= new Date()) {
+        status.textContent = "Belum ada langganan Premium aktif.";
+        return;
+      }
+      const planLabel = data.plan === "yearly" ? "Tahunan" : "Bulanan";
+      status.textContent = "Premium " + planLabel + " aktif sampai " + new Date(data.current_period_end).toLocaleString("id-ID") + ".";
+    }
+
+    document.getElementById("sign-in").addEventListener("click", async () => {
+      if (!supabase) return;
+      const { error } = await supabase.auth.signInWithPassword({ email: emailInput.value.trim(), password: passwordInput.value });
+      setMessage(error ? error.message : "Berhasil masuk.", !!error);
+      await refreshSessionUI();
+    });
+
+    document.getElementById("sign-up").addEventListener("click", async () => {
+      if (!supabase) return;
+      const { data, error } = await supabase.auth.signUp({ email: emailInput.value.trim(), password: passwordInput.value });
+      setMessage(error ? error.message : (data.session ? "Akun dibuat dan Anda sudah masuk." : "Akun dibuat. Periksa email untuk konfirmasi, lalu masuk."), !!error);
+      await refreshSessionUI();
+    });
+
+    document.getElementById("sign-out").addEventListener("click", async () => {
+      if (!supabase) return;
+      const { error } = await supabase.auth.signOut();
+      setMessage(error ? error.message : "Anda sudah keluar.", !!error);
+      await refreshSessionUI();
+    });
+
+    document.querySelectorAll(".buy-plan").forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (!supabase) return;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setMessage("Masuk atau buat akun dahulu sebelum membayar.", true);
+          emailInput.focus();
+          return;
+        }
+        button.disabled = true;
+        try {
+          const { data, error } = await supabase.functions.invoke("create-xendit-invoice", {
+            body: { plan: button.dataset.plan },
+          });
+          if (error) throw error;
+          if (!data || !data.invoice_url) throw new Error("Tautan pembayaran tidak tersedia.");
+          window.location.assign(data.invoice_url);
+        } catch (error) {
+          setMessage(error.message || "Gagal membuat pembayaran.", true);
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.getElementById("refresh-status").addEventListener("click", refreshSessionUI);
+    if (supabase) {
+      supabase.auth.onAuthStateChange(() => { refreshSessionUI(); });
+      refreshSessionUI();
+      const params = new URLSearchParams(location.search);
+      if (params.get("payment") === "success") {
+        setMessage("Pembayaran sedang diverifikasi Xendit. Tekan Perbarui status beberapa saat lagi.", false);
+      } else if (params.get("payment") === "failed") {
+        setMessage("Pembayaran belum berhasil. Anda dapat mencoba checkout kembali.", true);
+      }
+    }
+  </script>
+</body>
+</html>
