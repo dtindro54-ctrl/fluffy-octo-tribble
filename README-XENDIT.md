@@ -1,15 +1,21 @@
 # Xendit subscription setup (EduPlan AI)
 
-The subscription checkout scaffold uses Xendit invoices and Supabase Auth/Postgres/Edge Functions. It supports the requested fixed prices: Rp199,000 for one month and Rp350,000 for one year. Renewals are manual: the customer pays a new invoice when the current term ends; this is not automatic recurring billing.
+Checkout scaffold uses Xendit invoices and Supabase Auth/Postgres/Edge Functions. Prices are Rp199,000 for one month and Rp350,000 for one year. Renewals are manual; this does not create automatic recurring charges.
 
-## Important
+## Generation quotas
 
-Do not treat the existing `localStorage` Premium toggle in `index-v2.html` as proof of payment. It is only a browser demo and can be altered by the user. This scaffold validates checkout and records payment server-side, but the existing generator still needs to be changed to require the server-side subscription status before production use. Also move Gemini requests and the Gemini secret off the browser before charging users. Do not collect a user's Gemini key as a substitute for a server-side key unless the product is explicitly BYOK.
+- Free trial: 1 AI generation per account, one time.
+- Monthly subscription: up to 8 AI generations during the active subscription term.
+- Yearly subscription: up to 15 AI generations during the active subscription term.
+- The quota is stored and atomically enforced by Postgres. `consume-generation` authenticates the Supabase user and calls the quota function; the client cannot choose a user ID.
+- Paid Xendit webhooks activate or extend the subscription and reset `generations_used` for the newly granted term.
+
+**Important:** The current static `index-v2.html` generator still calls Gemini directly and its localStorage plan toggle is only a demo. It does not yet call `consume-generation`, so it is not protected by these server-side quotas. Do not launch paid access until the AI generation path is moved behind an authenticated server endpoint that consumes quota before calling Gemini. Never rely on front-end localStorage for subscription/quota validation, and do not expose Gemini or Xendit secret keys in the browser.
 
 ## Setup
 
-1. Create a Supabase project and enable Email/Password sign-in. Configure the allowed redirect URLs for your GitHub Pages site.
-2. Install the Supabase CLI and link this repository/project. Apply the migration:
+1. Create a Supabase project and enable Email/Password sign-in. Configure allowed redirect URLs for your GitHub Pages site.
+2. Link this repository with Supabase CLI and apply the migrations:
    ```sh
    supabase link --project-ref YOUR_PROJECT_REF
    supabase db push
@@ -21,26 +27,26 @@ Do not treat the existing `localStorage` Premium toggle in `index-v2.html` as pr
    supabase secrets set APP_BASE_URL=https://YOUR_GITHUB_PAGES_HOST/YOUR_REPO
    supabase secrets set APP_ORIGIN=https://YOUR_GITHUB_PAGES_HOST
    ```
-   `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are available in the Supabase Edge Function environment; if your deployment requires them to be configured manually, set them as secrets. Never expose the service-role key.
+   Supabase supplies its URL and keys in Edge Function environments; configure them manually as secrets only if your deployment requires it. Never expose the service-role key.
 4. Put your Supabase project URL and public anon key into `subscription.html` where the `YOUR_SUPABASE_...` placeholders are.
 5. Deploy functions:
    ```sh
    supabase functions deploy create-xendit-invoice
+   supabase functions deploy consume-generation
    supabase functions deploy xendit-webhook --no-verify-jwt
    ```
-6. In Xendit Dashboard, configure the Invoice paid/expired webhook URL as `https://YOUR_PROJECT_REF.supabase.co/functions/v1/xendit-webhook`. Configure the same webhook verification token as `XENDIT_CALLBACK_TOKEN`.
-7. Publish `subscription.html` on GitHub Pages. Test with Xendit test-mode credentials first; switch to live credentials only after webhook and entitlement tests pass.
+6. In Xendit Dashboard, configure Invoice paid/expired webhook URL as `https://YOUR_PROJECT_REF.supabase.co/functions/v1/xendit-webhook` and set the matching verification token as `XENDIT_CALLBACK_TOKEN`.
+7. Publish `subscription.html` on GitHub Pages. Test with Xendit test-mode credentials first; switch to live credentials only after paid, expired, repeated, and out-of-order webhook tests pass.
 
-## Payment flow
+## Payment and quota flow
 
-- A signed-in user selects monthly or yearly. `create-xendit-invoice` chooses the price on the server, creates a pending order, then requests an Xendit invoice.
-- The browser is redirected to Xendit's `invoice_url`.
-- Xendit calls `xendit-webhook`; the function validates `x-callback-token` and calls an idempotent database function. Only a `PAID` webhook activates/extends access. Expired invoices do not activate access.
-- The subscription portal reads only the signed-in user's status using row-level security.
+- Signed-in user chooses a plan; `create-xendit-invoice` selects the price server-side, saves a pending order, then requests an invoice.
+- User pays through the Xendit invoice URL.
+- Xendit calls `xendit-webhook`; the callback token is checked. Only `PAID` activates/extends access. Repeated paid notifications are idempotent.
+- To reserve one generation, the authenticated client calls `consume-generation` before generation. A production `generate-ai` endpoint should perform this quota call and the Gemini request in the same server-side flow so users cannot skip the quota endpoint.
 
 ## Before launch
 
-- Configure and test the Xendit webhook in test mode; validate real paid, expired, repeated, and out-of-order webhook events.
-- Add privacy policy, terms, customer support/refund flow, and renewal/cancellation disclosures.
-- Add server-side subscription checks to every paid action (especially AI generation and exports); never rely on a front-end badge/localStorage.
-- Add rate limiting/abuse controls and monitoring for checkout and AI endpoints.
+- Move Gemini calls behind an authenticated server endpoint, consume quota there, and keep Gemini API key only in server secrets.
+- Add rate limiting/abuse controls and monitoring.
+- Add privacy policy, terms, support/refund flow, and renewal/cancellation disclosures.
