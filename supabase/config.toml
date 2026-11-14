@@ -1,2 +1,5 @@
 [functions.consume-generation]
 verify_jwt = true
+
+[functions.generate-ai]
+verify_jwt = true
