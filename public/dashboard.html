@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-800">
+    <div class="flex min-h-screen">
+      <aside class="w-72 bg-slate-900 text-white">
+        <div class="border-b border-slate-700 p-6">
+          <h1 class="text-xl font-bold">EduComm Portal</h1>
+          <p class="mt-1 text-xs text-slate-400">System Dashboard</p>
+        </div>
+
+        <nav class="space-y-2 p-4">
+          <button data-tab="ai" class="w-full rounded-lg bg-blue-600 px-4 py-3 text-left font-medium">
+            🤖 Perangkat Guru AI
+          </button>
+          <button data-tab="keuangan" class="w-full rounded-lg px-4 py-3 text-left text-slate-300 hover:bg-slate-800">
+            💰 Keuangan
+          </button>
+          <button data-tab="sosmed" class="w-full rounded-lg px-4 py-3 text-left text-slate-300 hover:bg-slate-800">
+            📢 Blast Sosial
+          </button>
+        </nav>
+      </aside>
+
+      <main class="flex-1 p-6">
+        <div id="dashboard-status" class="mb-4 text-sm text-slate-600" role="status"></div>
+
+        <section id="section-ai" class="space-y-6">
+          <div class="rounded-xl border bg-white p-6 shadow-sm">
+            <h2 class="text-2xl font-bold">Perangkat Kerja Guru AI</h2>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              <div class="space-y-4">
+                <div>
+                  <label class="mb-1 block text-sm font-medium">Jenis Perangkat</label>
+                  <select id="ai-jenis" class="w-full rounded border p-2">
+                    <option value="modul_ajar">Modul Ajar / RPP</option>
+                    <option value="bank_soal">Bank Soal</option>
+                    <option value="rubrik_penilaian">Rubrik Penilaian</option>
+                    <option value="ringkasan">Ringkasan Materi</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-sm font-medium">Mata Pelajaran</label>
+                  <input id="ai-mapel" type="text" class="w-full rounded border p-2" placeholder="Contoh: Matematika" />
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-sm font-medium">Kelas / Fase</label>
+                  <input id="ai-kelas" type="text" class="w-full rounded border p-2" placeholder="Contoh: Kelas X / Fase E" />
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-sm font-medium">Topik</label>
+                  <input id="ai-topik" type="text" class="w-full rounded border p-2" placeholder="Contoh: Persamaan Linear" />
+                </div>
+
+                <div>
+                  <label class="mb-1 block text-sm font-medium">Tujuan Pembelajaran</label>
+                  <textarea id="ai-catatan" rows="2" class="w-full rounded border p-2" placeholder="Opsional"></textarea>
+                </div>
+
+                <button id="btn-generate-ai" class="w-full rounded bg-blue-600 px-4 py-2.5 text-white">
+                  ✨ Generate Dokumen
+                </button>
+              </div>
+
+              <div>
+                <label class="mb-1 block text-sm font-medium">Output</label>
+                <textarea id="ai-output" rows="16" class="w-full rounded border bg-slate-50 p-3 font-mono text-sm" readonly></textarea>
+                <div class="mt-3">
+                  <button data-action="copy-ai" class="rounded border bg-white px-3 py-2 text-sm">
+                    📋 Salin Teks
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-keuangan" class="hidden space-y-6">
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-xl border bg-white p-5">
+              <p class="text-xs uppercase text-slate-500">Total Pemasukan</p>
+              <p id="stat-masuk" class="mt-2 text-2xl font-bold text-emerald-600">Rp 0</p>
+            </div>
+            <div class="rounded-xl border bg-white p-5">
+              <p class="text-xs uppercase text-slate-500">Total Pengeluaran</p>
+              <p id="stat-keluar" class="mt-2 text-2xl font-bold text-rose-600">Rp 0</p>
+            </div>
+            <div class="rounded-xl border bg-white p-5">
+              <p class="text-xs uppercase text-slate-500">Saldo Bersih</p>
+              <p id="stat-saldo" class="mt-2 text-2xl font-bold text-blue-600">Rp 0</p>
+            </div>
+          </div>
+
+          <div class="rounded-xl border bg-white p-6">
+            <h3 class="mb-4 text-lg font-bold">Catat Transaksi Baru</h3>
+            <div class="grid gap-4 md:grid-cols-4">
+              <select id="keu-tipe" class="rounded border p-2">
+                <option value="PEMASUKAN">Pemasukan</option>
+                <option value="PENGELUARAN">Pengeluaran</option>
+              </select>
+              <input id="keu-keterangan" type="text" placeholder="Keterangan" class="rounded border p-2" />
+              <input id="keu-nominal" type="number" placeholder="Nominal" class="rounded border p-2" />
+              <button data-action="add-transaction" class="rounded bg-emerald-600 px-4 py-2 text-white">
+                + Simpan
+              </button>
+            </div>
+          </div>
+
+          <div class="rounded-xl border bg-white">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50">
+                <tr>
+                  <th class="p-4">Tanggal</th>
+                  <th class="p-4">Tipe</th>
+                  <th class="p-4">Keterangan</th>
+                  <th class="p-4">Nominal</th>
+                  <th class="p-4">Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabel-keuangan"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="section-sosmed" class="hidden space-y-6">
+          <div class="max-w-2xl rounded-xl border bg-white p-6">
+            <h2 class="text-2xl font-bold">Blast Media Sosial</h2>
+
+            <div class="mt-5 space-y-4">
+              <div>
+                <label class="mb-1 block text-sm font-medium">Judul</label>
+                <input id="sos-judul" type="text" class="w-full rounded border p-2" />
+              </div>
+
+              <div>
+                <label class="mb-1 block text-sm font-medium">Isi Pengumuman</label>
+                <textarea id="sos-pesan" rows="5" class="w-full rounded border p-2"></textarea>
+              </div>
+
+              <div>
+                <label class="mb-2 block text-sm font-medium">Target</label>
+                <div class="flex flex-wrap gap-4">
+                  <label><input type="checkbox" class="sos-target" value="whatsapp" checked /> WhatsApp</label>
+                  <label><input type="checkbox" class="sos-target" value="instagram" checked /> Instagram</label>
+                  <label><input type="checkbox" class="sos-target" value="facebook" /> Facebook</label>
+                  <label><input type="checkbox" class="sos-target" value="x" /> X</label>
+                </div>
+              </div>
+
+              <button data-action="broadcast" class="w-full rounded bg-indigo-600 px-4 py-2.5 text-white">
+                🚀 Kirim Pengumuman
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/dashboard.js" defer></script>
+  </body>
+</html>
