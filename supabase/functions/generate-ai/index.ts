@@ -160,6 +160,6 @@ Deno.serve(async (request) => {
     ok: true,
     text: sanitizeHtml(rawText),
     quota,
-    model: "gemini-2.0-flash",
+    model: "gemini-3.8-flash",
   });
 });
