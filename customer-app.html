@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPlan AI — Generator Perangkat Ajar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./assets/secure-generator-client.js"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+  <header class="bg-indigo-900 text-white px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+    <div><h1 class="font-bold text-lg">EduPlan AI — Perangkat Ajar</h1><p class="text-xs text-indigo-200">Generator CP, TP, ATP, PROTA, PROSEM & Modul Ajar</p></div>
+    <div class="flex items-center gap-2"><span id="subscription-status-badge" class="text-xs bg-white/10 border border-white/20 px-3 py-2 rounded">Status: memeriksa…</span><a href="./subscription.html" class="bg-amber-400 text-indigo-950 text-xs font-semibold px-3 py-2 rounded">Masuk / Langganan</a></div>
+  </header>
+  <main class="max-w-5xl mx-auto p-4 grid gap-4 md:grid-cols-2">
+    <form id="edu-form" class="bg-white rounded-xl border p-5 space-y-3">
+      <h2 class="font-bold">Data Perangkat Ajar</h2>
+      <label class="block text-sm">Nama sekolah<input id="sekolah" class="mt-1 w-full border rounded px-3 py-2" required value="" /></label>
+      <label class="block text-sm">Tahun ajaran<input id="tahun" class="mt-1 w-full border rounded px-3 py-2" required value="" placeholder="2026/2027" /></label>
+      <label class="block text-sm">Nama guru<input id="guru" class="mt-1 w-full border rounded px-3 py-2" required value="" /></label>
+      <label class="block text-sm">Jenjang / fase<select id="fase" class="mt-1 w-full border rounded px-3 py-2"><option>PAUD (Fase Fondasi)</option><option>SD - Fase A (Kelas 1-2)</option><option>SD - Fase B (Kelas 3-4)</option><option>SD - Fase C (Kelas 5-6)</option><option>SMP - Fase D (Kelas 7-9)</option><option selected>SMA/SMK - Fase E (Kelas 10)</option><option>SMA/SMK - Fase F (Kelas 11-12)</option></select></label>
+      <label class="block text-sm">Semester<select id="semester" class="mt-1 w-full border rounded px-3 py-2"><option>Ganjil</option><option>Genap</option></select></label>
+      <label class="block text-sm">Mata pelajaran & kelas<input id="mapel" class="mt-1 w-full border rounded px-3 py-2" required placeholder="Contoh: Biologi - Kelas X" /></label>
+      <label class="block text-sm">Topik / materi<input id="materi" class="mt-1 w-full border rounded px-3 py-2" required /></label>
+      <label class="block text-sm">Tujuan pembelajaran<textarea id="tujuan" rows="3" class="mt-1 w-full border rounded px-3 py-2" required></textarea></label>
+      <label class="block text-sm">Instruksi tambahan<textarea id="instruksi" rows="3" class="mt-1 w-full border rounded px-3 py-2" placeholder="Contoh: sertakan asesmen dan rubrik"></textarea></label>
+      <button id="generate-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded px-4 py-3" type="submit">✨ Generate Perangkat Ajar</button>
+      <p class="text-xs text-slate-500">Tidak perlu memasukkan Gemini API Key. Permintaan AI diproses dengan aman melalui server.</p>
+      <p id="status" class="hidden rounded p-3 text-sm" role="status"></p>
+    </form>
+    <section class="bg-white rounded-xl border p-5 min-h-96">
+      <div class="flex justify-between items-center gap-2"><h2 class="font-bold">Hasil</h2><button id="print-button" type="button" class="border rounded px-3 py-2 text-sm">Cetak / Simpan PDF</button></div>
+      <article id="result" class="mt-4 prose max-w-none overflow-x-auto"></article>
+    </section>
+  </main>
+  <script>
+    // These are public Supabase client settings, not secret API keys. Configure before publishing.
+    window.__EDUPLAN_SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
+    window.__EDUPLAN_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+    const form = document.getElementById("edu-form");
+    const status = document.getElementById("status");
+    const button = document.getElementById("generate-button");
+    function setStatus(message, isError = false) {
+      status.textContent = message;
+      status.className = "rounded p-3 text-sm " + (isError ? "bg-rose-50 text-rose-700" : "bg-indigo-50 text-indigo-800");
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      if (!window.EduPlanSecureGenerate?.generate) {
+        setStatus("Layanan belum siap. Periksa konfigurasi Supabase.", true);
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "⏳ Sedang menyusun…";
+      status.classList.remove("hidden");
+      setStatus("Menghubungi layanan AI yang aman…");
+      const val = (id) => document.getElementById(id).value.trim();
+      const prompt = `Buat perangkat ajar Kurikulum Merdeka dalam HTML terstruktur, tanpa markdown. Sekolah: ${val("sekolah")}. Tahun ajaran: ${val("tahun")}. Guru: ${val("guru")}. Jenjang/fase: ${val("fase")}. Semester: ${val("semester")}. Mata pelajaran dan kelas: ${val("mapel")}. Topik: ${val("materi")}. Tujuan pembelajaran: ${val("tujuan")}. Buat CP, TP, ATP, PROTA, PROSEM, modul ajar, aktivitas pembelajaran dan asesmen yang rinci serta siap digunakan. Instruksi tambahan: ${val("instruksi")}.`;
+      try {
+        const generated = await window.EduPlanSecureGenerate.generate(prompt, { systemPrompt: "Anda ahli penyusunan perangkat ajar Kurikulum Merdeka. Hasilkan HTML aman dan terstruktur." });
+        document.getElementById("result").innerHTML = generated.text || "Tidak ada hasil.";
+        setStatus("Dokumen berhasil dibuat.");
+      } catch (error) {
+        setStatus(error?.message || "Generate gagal. Pastikan sudah masuk dan konfigurasi server tersedia.", true);
+      } finally {
+        button.disabled = false;
+        button.textContent = "✨ Generate Perangkat Ajar";
+      }
+    });
+    document.getElementById("print-button").addEventListener("click", () => window.print());
+  </script>
+</body>
+</html>
