@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduPlan AI - Generator Perangkat Ajar Kurikulum Merdeka</title>
+  <title>EduPlan AI - Generator Perangkat Ajar Kurikulum Merdeka (Deep Learning)</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -24,45 +24,13 @@
       line-height: 1.45;
       color: #000;
     }
-
-    .paper-a4 h1 {
-      font-size: 14pt;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .paper-a4 h2 {
-      font-size: 12.5pt;
-      font-weight: bold;
-      margin-top: 18px;
-      margin-bottom: 8px;
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 3px;
-      text-transform: uppercase;
-    }
-
-    .paper-a4 h3 {
-      font-size: 11.5pt;
-      font-weight: bold;
-      margin-top: 12px;
-      margin-bottom: 5px;
-    }
-
-    .paper-a4 p {
-      margin-bottom: 6px;
-      text-align: justify;
-    }
-
-    .paper-a4 ul, .paper-a4 ol {
-      margin-left: 20px;
-      margin-bottom: 8px;
-    }
-
+    .paper-a4 h1 { font-size: 14pt; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
+    .paper-a4 h2 { font-size: 12.5pt; font-weight: bold; margin-top: 18px; margin-bottom: 8px; border-bottom: 1.5px solid #000; padding-bottom: 3px; text-transform: uppercase; }
+    .paper-a4 h3 { font-size: 11.5pt; font-weight: bold; margin-top: 12px; margin-bottom: 5px; }
+    .paper-a4 p { margin-bottom: 6px; text-align: justify; }
+    .paper-a4 ul, .paper-a4 ol { margin-left: 20px; margin-bottom: 8px; }
     .paper-a4 ul { list-style-type: disc; }
     .paper-a4 ol { list-style-type: decimal; }
-
     .paper-a4 table {
       width: 100%;
       border-collapse: collapse;
@@ -70,29 +38,24 @@
       margin-bottom: 14px;
       font-size: 10.5pt;
     }
-
     .paper-a4 table th, .paper-a4 table td {
       border: 1px solid #000;
       padding: 6px 8px;
       vertical-align: top;
     }
-
     .paper-a4 table th {
       background-color: #f0f0f0;
       font-weight: bold;
       text-align: center;
     }
-
     .paper-a4 table.no-border td {
       border: none;
       padding: 2px 4px;
     }
-
     .page-break {
       page-break-before: always;
       margin-top: 24px;
     }
-
     @media print {
       body * { visibility: hidden; }
       #printable-area, #printable-area * { visibility: visible; }
@@ -107,41 +70,9 @@
       }
       .no-print { display: none !important; }
     }
-
-    .toast {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 9999;
-      background: rgba(15, 23, 42, 0.95);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-      pointer-events: none;
-      max-width: 300px;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .toast.success {
-      background: rgba(5, 150, 105, 0.96);
-    }
-
-    .toast.error {
-      background: rgba(220, 38, 38, 0.96);
-    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
-
   <header class="bg-indigo-900 text-white px-6 py-3 shadow-md flex flex-wrap items-center justify-between no-print">
     <div class="flex items-center gap-3">
       <div class="bg-amber-400 text-indigo-950 font-bold px-2.5 py-1 rounded text-sm">AI</div>
@@ -151,7 +82,7 @@
       </div>
     </div>
     <div class="flex items-center gap-2 mt-2 sm:mt-0">
-      <button onclick="toggleApiModal()" class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-2 rounded font-medium border border-indigo-500 transition">
+      <button type="button" onclick="toggleApiModal()" class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-2 rounded font-medium border border-indigo-500 transition">
         🔑 Pengaturan Gemini API Key
       </button>
     </div>
@@ -161,13 +92,14 @@
     <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
       <h3 class="font-bold text-lg text-slate-900 mb-2">Pengaturan Google Gemini API Key</h3>
       <p class="text-xs text-slate-600 mb-4 leading-relaxed">
-        API Key disimpan secara lokal di browser Anda (<strong>localStorage</strong>) sehingga aman di GitHub Pages.
+        API Key disimpan secara lokal di browser Anda (<strong>localStorage</strong>) sehingga aman di GitHub Pages. Dapatkan API Key gratis di
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" class="text-indigo-600 underline font-semibold">Google AI Studio</a>.
       </p>
       <label class="block text-xs font-semibold text-slate-700 mb-1">Masukkan Gemini API Key:</label>
       <input type="password" id="gemini-api-key" placeholder="AIzaSy..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
       <div class="flex justify-end gap-2">
-        <button onclick="toggleApiModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Tutup</button>
-        <button onclick="saveApiKey()" class="px-4 py-2 text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg">Simpan Key</button>
+        <button type="button" onclick="toggleApiModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Tutup</button>
+        <button type="button" onclick="saveApiKey()" class="px-4 py-2 text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg">Simpan Key</button>
       </div>
     </div>
   </div>
@@ -176,7 +108,7 @@
     <section class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 h-fit no-print">
       <div class="flex items-center justify-between border-b pb-3 mb-4">
         <h2 class="font-bold text-base text-slate-800">1. Data Identitas & Sumber Buku</h2>
-        <button onclick="fillSampleInput()" class="text-xs text-indigo-600 hover:underline font-semibold">Isi Contoh Form</button>
+        <button type="button" onclick="fillSampleInput()" class="text-xs text-indigo-600 hover:underline font-semibold">Isi Contoh Form</button>
       </div>
 
       <form id="edu-form" class="space-y-3 text-sm">
@@ -301,9 +233,6 @@
           <button type="button" onclick="generateDemo()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition text-xs">
             ⚡ Mode Demo Cepat (Tanpa API Key)
           </button>
-          <button type="button" onclick="resetForm()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-lg shadow-sm transition text-xs">
-            ↺ Reset Form
-          </button>
         </div>
       </form>
     </section>
@@ -316,13 +245,13 @@
           </span>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+          <button type="button" onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
             🖨️ Cetak Langsung (Print)
           </button>
-          <button onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+          <button type="button" onclick="downloadPDF()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
             📄 Download PDF
           </button>
-          <button onclick="downloadWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+          <button type="button" onclick="downloadWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
             📝 Download Word (.docx)
           </button>
         </div>
@@ -345,8 +274,6 @@
     </section>
   </main>
 
-  <div id="toast" class="toast"></div>
-
   <script>
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -354,138 +281,12 @@
 
     let uploadedBookText = "";
     let uploadedBookName = "";
-    const DRAFT_KEY = "eduplan_ai_draft_v1";
 
-    function showToast(message, type = "success") {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.className = "toast show " + type;
-      clearTimeout(window.toastTimer);
-      window.toastTimer = setTimeout(() => {
-        toast.className = "toast";
-      }, 2200);
-    }
-
-    function safeFileName(value) {
-      return String(value || "Perangkat_Ajar")
-        .replace(/[^a-zA-Z0-9-_ ]/g, "_")
-        .trim() || "Perangkat_Ajar";
-    }
-
-    function getFormElements() {
-      return [
-        "sekolah", "tahun", "guru", "nipGuru", "kepsek", "nipKepsek",
-        "fase", "semester", "jp", "mapel", "materi", "cp",
-        "chk-cptp", "chk-prota", "chk-prosem", "chk-modul",
-        "pdf-start-page", "pdf-end-page"
-      ];
-    }
-
-    function saveDraft() {
-      const payload = {};
-      getFormElements().forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.type === "checkbox") {
-          payload[id] = el.checked;
-        } else {
-          payload[id] = el.value;
-        }
-      });
-
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
-    }
-
-    function loadDraft() {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (!raw) return;
-
-      try {
-        const data = JSON.parse(raw);
-        Object.entries(data).forEach(([key, value]) => {
-          const el = document.getElementById(key);
-          if (!el) return;
-          if (el.type === "checkbox") {
-            el.checked = !!value;
-          } else {
-            el.value = value;
-          }
-        });
-      } catch (e) {
-        console.warn("Draft gagal dimuat:", e);
-      }
-    }
-
-    function validateBeforeGenerate() {
-      const requiredFields = ["sekolah", "tahun", "guru", "mapel", "materi", "cp"];
-
-      for (const id of requiredFields) {
-        const value = document.getElementById(id).value.trim();
-        if (!value) {
-          showToast(`Field "${id}" wajib diisi`, "error");
-          document.getElementById(id).focus();
-          return false;
-        }
-      }
-
-      const hasSelectedDoc =
-        document.getElementById("chk-cptp").checked ||
-        document.getElementById("chk-prota").checked ||
-        document.getElementById("chk-prosem").checked ||
-        document.getElementById("chk-modul").checked;
-
-      if (!hasSelectedDoc) {
-        showToast("Pilih minimal satu perangkat ajar", "error");
-        return false;
-      }
-
-      return true;
-    }
-
-    function resetForm() {
-      if (!confirm("Yakin ingin reset semua form?")) return;
-
-      document.getElementById("edu-form").reset();
-
-      document.getElementById("sekolah").value = "SMA Negeri 1 Nusantara";
-      document.getElementById("tahun").value = "2026/2027";
-      document.getElementById("guru").value = "Budi Santoso, S.Pd.";
-      document.getElementById("nipGuru").value = "19850412 201001 1 012";
-      document.getElementById("kepsek").value = "Dr. Hj. Siti Aminah, M.Pd.";
-      document.getElementById("nipKepsek").value = "19720817 199802 2 003";
-      document.getElementById("fase").value = "SMA/SMK - Fase E (Kelas 10)";
-      document.getElementById("semester").value = "Ganjil";
-      document.getElementById("jp").value = "36 JP";
-      document.getElementById("mapel").value = "Ilmu Pengetahuan Alam (Biologi) - Kelas X";
-      document.getElementById("materi").value = "Keanekaragaman Hayati dan Ekosistem Lokal";
-      document.getElementById("cp").value = "Peserta didik mampu menciptakan solusi atas permasalahan berdasarkan isu lokal, nasional, atau global terkait pemahaman keanekaragaman makhluk hidup dan peranannya serta ekosistem dan interaksi antar komponennya.";
-
-      document.getElementById("chk-cptp").checked = true;
-      document.getElementById("chk-prota").checked = true;
-      document.getElementById("chk-prosem").checked = true;
-      document.getElementById("chk-modul").checked = true;
-
-      document.getElementById("pdf-start-page").value = "1";
-      document.getElementById("pdf-end-page").value = "25";
-
-      clearBookFile();
-      saveDraft();
-
-      showToast("Form berhasil direset");
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", function () {
       const savedKey = localStorage.getItem("gemini_api_key");
       if (savedKey) {
         document.getElementById("gemini-api-key").value = savedKey;
       }
-
-      loadDraft();
-
-      document.querySelectorAll("input, textarea, select").forEach(el => {
-        el.addEventListener("input", saveDraft);
-        el.addEventListener("change", saveDraft);
-      });
     });
 
     function toggleApiModal() {
@@ -501,7 +302,7 @@
         return;
       }
       localStorage.setItem("gemini_api_key", key);
-      showToast("API Key berhasil disimpan", "success");
+      alert("API Key berhasil disimpan di browser Anda!");
       toggleApiModal();
     }
 
@@ -513,7 +314,7 @@
       const clearBtn = document.getElementById("btn-clear-book");
       statusEl.classList.remove("hidden", "text-rose-600");
       statusEl.classList.add("text-indigo-700");
-      statusEl.textContent = `⏳ Membaca isi buku "${file.name}"...`;
+      statusEl.textContent = '⏳ Membaca isi buku "' + file.name + '"...';
 
       try {
         const ext = file.name.split(".").pop().toLowerCase();
@@ -523,7 +324,7 @@
           extractedText = await file.text();
         } else if (ext === "docx") {
           const arrayBuffer = await file.arrayBuffer();
-          const result = await mammoth.extractRawText({ arrayBuffer });
+          const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
           extractedText = result.value || "";
         } else if (ext === "pdf") {
           if (!window.pdfjsLib) {
@@ -536,17 +337,16 @@
           const endPage = Math.min(pdf.numPages, parseInt(document.getElementById("pdf-end-page").value) || 25);
 
           if (startPage > pdf.numPages) {
-            throw new Error(`Halaman awal (${startPage}) melebihi total halaman buku (${pdf.numPages} hal).`);
+            throw new Error("Halaman awal (" + startPage + ") melebihi total halaman buku (" + pdf.numPages + " hal).");
           }
 
-          const pagesText = [];
+          let pagesText = [];
           for (let i = startPage; i <= endPage; i++) {
             const page = await pdf.getPage(i);
             const content = await page.getTextContent();
-            const strings = content.items.map(item => item.str).join(" ");
-            pagesText.push(`[Halaman ${i}]\n${strings}`);
+            const strings = content.items.map(function (item) { return item.str; }).join(" ");
+            pagesText.push("[Halaman " + i + "]\n" + strings);
           }
-
           extractedText = pagesText.join("\n\n");
         } else {
           throw new Error("Format file tidak didukung. Gunakan PDF, DOCX, atau TXT.");
@@ -562,17 +362,14 @@
 
         statusEl.classList.remove("text-indigo-700");
         statusEl.classList.add("text-emerald-700");
-        statusEl.textContent = `✅ Berhasil memuat "${file.name}" (${uploadedBookText.length.toLocaleString("id-ID")} karakter siap diproses AI).`;
+        statusEl.textContent = '✅ Berhasil memuat "' + file.name + '" (' + uploadedBookText.length.toLocaleString("id-ID") + ' karakter siap diproses AI).';
         clearBtn.classList.remove("hidden");
-
-        showToast("Buku berhasil dimuat", "success");
       } catch (err) {
         uploadedBookText = "";
         uploadedBookName = "";
         statusEl.classList.remove("text-indigo-700");
         statusEl.classList.add("text-rose-600");
-        statusEl.textContent = `❌ Gagal membaca file: ${err.message || "Kesalahan tidak diketahui"}`;
-        showToast(`Gagal membaca file: ${err.message || "Kesalahan tidak diketahui"}`, "error");
+        statusEl.textContent = '❌ Gagal membaca file: ' + (err.message || "Kesalahan tidak diketahui");
       }
     }
 
@@ -580,8 +377,7 @@
       uploadedBookText = "";
       uploadedBookName = "";
       document.getElementById("book-upload").value = "";
-      const statusEl = document.getElementById("book-status");
-      statusEl.classList.add("hidden");
+      document.getElementById("book-status").classList.add("hidden");
       document.getElementById("btn-clear-book").classList.add("hidden");
     }
 
@@ -607,19 +403,14 @@
     }
 
     function buildSignatureBlock(data) {
-      const today = new Date().toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
-
+      const today = new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
       return `
         <br/><br/>
         <table class="no-border" style="width: 100%; margin-top: 24px; page-break-inside: avoid;">
           <tr>
             <td style="width: 50%; text-align: center;">
               Mengetahui,<br/>Kepala ${data.sekolah}<br/><br/><br/><br/>
-              <strong><u>${data.kepsek}</u></strong><br/>
+              <strong><u>${data.kepsek || "...................."}</u></strong><br/>
               NIP. ${data.nipKepsek || "-"}
             </td>
             <td style="width: 50%; text-align: center;">
@@ -633,8 +424,6 @@
     }
 
     async function generateWithAI() {
-      if (!validateBeforeGenerate()) return;
-
       const apiKey = localStorage.getItem("gemini_api_key") || document.getElementById("gemini-api-key").value.trim();
       if (!apiKey) {
         alert("Masukkan Google Gemini API Key terlebih dahulu melalui tombol 'Pengaturan Gemini API Key' di pojok kanan atas, atau gunakan tombol 'Mode Demo Cepat'.");
@@ -644,18 +433,14 @@
 
       const data = getFormData();
       const selectedDocs = [];
+      if (data.includeCpTp) selectedDocs.push("1. Analisis CP, Tujuan Pembelajaran (TP), dan Alur Tujuan Pembelajaran (ATP) dalam bentuk tabel");
+      if (data.includeProta) selectedDocs.push("2. Program Tahunan (PROTA) dalam bentuk tabel lengkap");
+      if (data.includeProsem) selectedDocs.push("3. Program Semester (PROSEM) dalam bentuk tabel matriks bulan (Juli-Desember untuk Ganjil, Januari-Juni untuk Genap) beserta kolom minggu ke-1 s.d. ke-5 dan tanda centang (✓) pada minggu efektif");
+      if (data.includeModul) selectedDocs.push("4. Modul Ajar Berbasis Deep Learning (Pembelajaran Mendalam) lengkap dengan: Informasi Umum, 8 Dimensi Profil Lulusan / Profil Pelajar Pancasila, Pemahaman Bermakna, Pertanyaan Pemantik, Langkah Pembelajaran Mendalam yang memadukan Mindful Learning (Berkesadaran), Meaningful Learning (Bermakna), dan Joyful Learning (Menggembirakan) melalui tahapan Memahami, Mengaplikasi, dan Merefleksi (Pendahuluan, Inti, Penutup), Asesmen (Diagnostik, Formatif, Sumatif + Rubrik), serta Lampiran LKPD");
 
-      if (data.includeCpTp) {
-        selectedDocs.push("1. Analisis CP, Tujuan Pembelajaran (TP), dan Alur Tujuan Pembelajaran (ATP) dalam bentuk tabel");
-      }
-      if (data.includeProta) {
-        selectedDocs.push("2. Program Tahunan (PROTA) dalam bentuk tabel lengkap");
-      }
-      if (data.includeProsem) {
-        selectedDocs.push("3. Program Semester (PROSEM) dalam bentuk tabel matriks bulan (Juli-Desember untuk Ganjil, Januari-Juni untuk Genap) beserta kolom minggu ke-1 s.d. ke-5 dan tanda centang (✓) pada minggu efektif");
-      }
-      if (data.includeModul) {
-        selectedDocs.push("4. Modul Ajar Berbasis Deep Learning (Pembelajaran Mendalam) lengkap dengan: Informasi Umum, 8 Dimensi Profil Lulusan, Pemahaman Bermakna, Pertanyaan Pemantik, Langkah Pembelajaran Mendalam yang memadukan Mindful Learning, Meaningful Learning, dan Joyful Learning, Asesmen, serta Lampiran LKPD");
+      if (selectedDocs.length === 0) {
+        alert("Pilih minimal satu jenis perangkat ajar!");
+        return;
       }
 
       const loadingBox = document.getElementById("loading-box");
@@ -663,9 +448,8 @@
       const btnAi = document.getElementById("btn-ai");
 
       loadingTitle.textContent = uploadedBookText
-        ? `AI sedang menganalisis buku "${uploadedBookName}" & menyusun perangkat ajar...`
+        ? 'AI sedang menganalisis buku "' + uploadedBookName + '" & menyusun perangkat ajar...'
         : "AI sedang menyusun Perangkat Ajar Deep Learning Anda...";
-
       loadingBox.classList.remove("hidden");
       btnAi.disabled = true;
 
@@ -692,7 +476,7 @@
         - Total Alokasi Waktu: ${data.jp}
         - Topik/Materi Pokok: ${data.materi}
         - Capaian Pembelajaran (CP) / Instruksi: ${data.cp}
-        ${uploadedBookName ? `- Buku Referensi Utama: ${uploadedBookName}` : ""}
+        ${uploadedBookName ? "- Buku Referensi Utama: " + uploadedBookName : ""}
 
         ${bookContextSection}
 
@@ -707,7 +491,7 @@
       `;
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -717,17 +501,15 @@
 
         const result = await response.json();
         if (!response.ok) {
-          throw new Error(result.error?.message || "Gagal menghubungi Gemini API");
+          throw new Error(result.error && result.error.message ? result.error.message : "Gagal menghubungi Gemini API");
         }
 
-        let htmlOutput = result.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        let htmlOutput = result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0] ? result.candidates[0].content.parts[0].text : "";
         htmlOutput = htmlOutput.replace(/^```html\s*/i, "").replace(/```\s*$/i, "");
 
         document.getElementById("printable-area").innerHTML = htmlOutput + buildSignatureBlock(data);
-        showToast("Dokumen AI berhasil dibuat", "success");
       } catch (err) {
         alert("Terjadi kesalahan: " + (err.message || "Tidak diketahui"));
-        showToast("Gagal membuat dokumen AI", "error");
       } finally {
         loadingBox.classList.add("hidden");
         btnAi.disabled = false;
@@ -735,8 +517,6 @@
     }
 
     function generateDemo() {
-      if (!validateBeforeGenerate()) return;
-
       const data = getFormData();
       const isGanjil = data.semester === "Ganjil";
       const months = isGanjil
@@ -744,7 +524,7 @@
         : ["Januari", "Februari", "Maret", "April", "Mei", "Juni"];
 
       const sumberBukuRow = uploadedBookName
-        ? `<tr><td><strong>Sumber Buku Referensi</strong></td><td>:</td><td>${uploadedBookName}</td></tr>`
+        ? '<tr><td><strong>Sumber Buku Referensi</strong></td><td>:</td><td>' + uploadedBookName + '</td></tr>'
         : "";
 
       let html = `
@@ -848,10 +628,10 @@
                 <th rowspan="2" style="width: 5%;">No</th>
                 <th rowspan="2" style="width: 35%;">Materi Pokok / ATP</th>
                 <th rowspan="2" style="width: 8%;">JP</th>
-                ${months.map(m => `<th colspan="4">${m}</th>`).join("")}
+                ${months.map(function (m) { return '<th colspan="4">' + m + '</th>'; }).join("")}
               </tr>
               <tr>
-                ${months.map(() => `<th>1</th><th>2</th><th>3</th><th>4</th>`).join("")}
+                ${months.map(function () { return '<th>1</th><th>2</th><th>3</th><th>4</th>'; }).join("")}
               </tr>
             </thead>
             <tbody>
@@ -956,29 +736,25 @@
       }
 
       document.getElementById("printable-area").innerHTML = html + buildSignatureBlock(data);
-      showToast("Demo berhasil dibuat", "success");
     }
 
     function downloadPDF() {
       const element = document.getElementById("printable-area");
-      const mapel = safeFileName(document.getElementById("mapel").value);
-
+      const mapel = document.getElementById("mapel").value.replace(/[^a-zA-Z0-9]/g, "_");
       const opt = {
         margin: [10, 10, 10, 10],
-        filename: `Perangkat_Ajar_${mapel}.pdf`,
+        filename: "Perangkat_Ajar_" + mapel + ".pdf",
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         pagebreak: { mode: ["css", "legacy"] }
       };
-
       html2pdf().set(opt).from(element).save();
-      showToast("PDF sedang diunduh", "success");
     }
 
     function downloadWord() {
       const content = document.getElementById("printable-area").innerHTML;
-      const mapel = safeFileName(document.getElementById("mapel").value);
+      const mapel = document.getElementById("mapel").value.replace(/[^a-zA-Z0-9]/g, "_");
 
       const fullHtml = `
         <!DOCTYPE html>
@@ -1000,19 +776,13 @@
         </html>
       `;
 
-      const converted = htmlDocx.asBlob(fullHtml, {
-        orientation: "portrait",
-        margins: { top: 720, right: 720, bottom: 720, left: 720 }
-      });
-
+      const converted = htmlDocx.asBlob(fullHtml, { orientation: "portrait", margins: { top: 720, right: 720, bottom: 720, left: 720 } });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(converted);
-      link.download = `Perangkat_Ajar_${mapel}.docx`;
+      link.download = "Perangkat_Ajar_" + mapel + ".docx";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      showToast("Word sedang diunduh", "success");
     }
 
     function fillSampleInput() {
@@ -1022,8 +792,6 @@
       document.getElementById("mapel").value = "Ilmu Pengetahuan Sosial (IPS) - Kelas VIII";
       document.getElementById("materi").value = "Kondisi Geografis dan Pelestarian Sumber Daya Alam";
       document.getElementById("cp").value = "Peserta didik mampu memahami dan memiliki kesadaran akan keberadaan diri dan keluarga serta lingkungan terdekatnya, serta menganalisis hubungan antara kondisi geografis daerah dengan karakteristik masyarakat dan potensi sumber daya alamnya.";
-      saveDraft();
-      showToast("Contoh form telah diisi", "success");
     }
   </script>
 </body>
