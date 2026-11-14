@@ -9,7 +9,7 @@
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800">
   <main class="max-w-3xl mx-auto p-5 md:p-10">
-    <a class="text-sm text-indigo-700 hover:underline" href="./index-v2.html">← Kembali ke EduPlan AI</a>
+    <a class="text-sm text-indigo-700 hover:underline" href="./index.html">← Kembali ke EduPlan AI</a>
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
       <h1 class="text-2xl font-bold">Langganan EduPlan AI</h1>
       <p class="text-sm text-slate-600 mt-2">Pilih paketmu, lalu bayar melalui Virtual Account Xendit. Pembayaran hanya via VA, dengan nama rekening <strong>Indro DT Karyanto</strong>.</p>
@@ -22,9 +22,9 @@
           <input id="password" type="password" autocomplete="current-password" minlength="8" class="block w-full border rounded-lg p-2 mt-1" required />
         </label>
         <div class="md:col-span-2 flex flex-wrap gap-2">
-          <button id="sign-in" class="bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-semibold">Masuk</button>
-          <button id="sign-up" class="bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Buat akun</button>
-          <button id="sign-out" class="hidden bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Keluar</button>
+          <button id="sign-in" type="button" class="bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-semibold">Masuk</button>
+          <button id="sign-up" type="button" class="bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Buat akun</button>
+          <button id="sign-out" type="button" class="hidden bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Keluar</button>
         </div>
       </div>
       <p id="message" role="status" class="text-sm mt-4"></p>
@@ -35,13 +35,13 @@
         <p class="text-sm font-semibold text-slate-500">PREMIUM BULANAN</p>
         <p class="text-3xl font-bold mt-2">Rp199.000<span class="text-sm font-normal text-slate-500"> / bulan</span></p>
         <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu bulan sejak pembayaran berhasil.</p>
-        <button data-plan="monthly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Bulanan</button>
+        <button data-plan="monthly" type="button" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Bulanan</button>
       </article>
       <article class="bg-white rounded-2xl shadow-sm border border-indigo-300 p-5">
         <p class="text-sm font-semibold text-indigo-600">PREMIUM TAHUNAN</p>
         <p class="text-3xl font-bold mt-2">Rp350.000<span class="text-sm font-normal text-slate-500"> / tahun</span></p>
         <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu tahun sejak pembayaran berhasil.</p>
-        <button data-plan="yearly" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Tahunan</button>
+        <button data-plan="yearly" type="button" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Tahunan</button>
       </article>
     </section>
 
@@ -53,16 +53,14 @@
         <li>• Bank Jago</li>
         <li>• Superbank</li>
       </ul>
-      <p class="text-sm text-slate-700 mt-4">
-        Nama rekening penerima: <strong>Indro DT Karyanto</strong>
-      </p>
+      <p class="text-sm text-slate-700 mt-4">Nama rekening penerima: <strong>Indro DT Karyanto</strong></p>
       <p class="text-xs text-slate-500 mt-2">Pembayaran akan diproses melalui Xendit Invoice untuk nomor VA yang unik per transaksi.</p>
     </section>
 
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
       <div class="flex flex-wrap justify-between items-center gap-2">
         <h2 class="font-bold">Status langganan</h2>
-        <button id="refresh-status" class="text-sm text-indigo-700 hover:underline">Perbarui status</button>
+        <button id="refresh-status" type="button" class="text-sm text-indigo-700 hover:underline">Perbarui status</button>
       </div>
       <p id="subscription-status" class="text-sm text-slate-600 mt-2">Masuk untuk melihat status.</p>
     </section>
@@ -74,12 +72,11 @@
     const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
     const warning = document.getElementById("setup-warning");
     if (!configured) {
-      warning.textContent = "Halaman checkout belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_ANON_KEY di subscription.html, lalu deploy fungsi Supabase dan atur secrets sesuai README.";
+      warning.textContent = "Layanan masuk dan pembayaran belum aktif karena URL Supabase dan anon/public key belum dikonfigurasi oleh pengelola. Tombol tetap bisa diklik untuk menampilkan informasi ini; pelanggan tidak perlu memasukkan API key Gemini.";
       warning.classList.remove("hidden");
-      document.querySelectorAll("button").forEach((button) => { button.disabled = true; button.classList.add("opacity-50", "cursor-not-allowed"); });
     }
 
-    const supabase = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    const supabase = configured && window.supabase?.createClient ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
     const message = document.getElementById("message");
     const status = document.getElementById("subscription-status");
     const emailInput = document.getElementById("email");
@@ -89,9 +86,17 @@
       message.textContent = text;
       message.className = "text-sm mt-4 " + (isError ? "text-rose-700" : "text-emerald-700");
     }
+    function requireSupabase() {
+      if (supabase) return true;
+      setMessage("Fitur ini belum aktif: pengelola perlu mengisi URL Supabase dan anon/public key di konfigurasi situs. Jangan masukkan Gemini API Key di sini.", true);
+      return false;
+    }
 
     async function refreshSessionUI() {
-      if (!supabase) return;
+      if (!supabase) {
+        status.textContent = "Status langganan belum tersedia karena konfigurasi layanan belum diisi.";
+        return;
+      }
       const { data: { session } } = await supabase.auth.getSession();
       document.getElementById("sign-in").classList.toggle("hidden", !!session);
       document.getElementById("sign-up").classList.toggle("hidden", !!session);
@@ -118,21 +123,21 @@
     }
 
     document.getElementById("sign-in").addEventListener("click", async () => {
-      if (!supabase) return;
+      if (!requireSupabase()) return;
       const { error } = await supabase.auth.signInWithPassword({ email: emailInput.value.trim(), password: passwordInput.value });
       setMessage(error ? error.message : "Berhasil masuk.", !!error);
       await refreshSessionUI();
     });
 
     document.getElementById("sign-up").addEventListener("click", async () => {
-      if (!supabase) return;
+      if (!requireSupabase()) return;
       const { data, error } = await supabase.auth.signUp({ email: emailInput.value.trim(), password: passwordInput.value });
       setMessage(error ? error.message : (data.session ? "Akun dibuat dan Anda sudah masuk." : "Akun dibuat. Periksa email untuk konfirmasi, lalu masuk."), !!error);
       await refreshSessionUI();
     });
 
     document.getElementById("sign-out").addEventListener("click", async () => {
-      if (!supabase) return;
+      if (!requireSupabase()) return;
       const { error } = await supabase.auth.signOut();
       setMessage(error ? error.message : "Anda sudah keluar.", !!error);
       await refreshSessionUI();
@@ -140,7 +145,7 @@
 
     document.querySelectorAll(".buy-plan").forEach((button) => {
       button.addEventListener("click", async () => {
-        if (!supabase) return;
+        if (!requireSupabase()) return;
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           setMessage("Masuk atau buat akun dahulu sebelum membayar.", true);
@@ -162,7 +167,13 @@
       });
     });
 
-    document.getElementById("refresh-status").addEventListener("click", refreshSessionUI);
+    document.getElementById("refresh-status").addEventListener("click", async () => {
+      if (!requireSupabase()) {
+        await refreshSessionUI();
+        return;
+      }
+      await refreshSessionUI();
+    });
     if (supabase) {
       supabase.auth.onAuthStateChange(() => { refreshSessionUI(); });
       refreshSessionUI();
@@ -172,6 +183,8 @@
       } else if (params.get("payment") === "failed") {
         setMessage("Pembayaran belum berhasil. Anda dapat mencoba checkout kembali.", true);
       }
+    } else {
+      refreshSessionUI();
     }
   </script>
 </body>
