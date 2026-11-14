@@ -24,6 +24,7 @@
       line-height: 1.45;
       color: #000;
     }
+
     .paper-a4 h1 { font-size: 14pt; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 4px; }
     .paper-a4 h2 { font-size: 12.5pt; font-weight: bold; margin-top: 18px; margin-bottom: 8px; border-bottom: 1.5px solid #000; padding-bottom: 3px; text-transform: uppercase; }
     .paper-a4 h3 { font-size: 11.5pt; font-weight: bold; margin-top: 12px; margin-bottom: 5px; }
@@ -31,6 +32,7 @@
     .paper-a4 ul, .paper-a4 ol { margin-left: 20px; margin-bottom: 8px; }
     .paper-a4 ul { list-style-type: disc; }
     .paper-a4 ol { list-style-type: decimal; }
+
     .paper-a4 table {
       width: 100%;
       border-collapse: collapse;
@@ -52,13 +54,19 @@
       border: none;
       padding: 2px 4px;
     }
+
     .page-break {
       page-break-before: always;
       margin-top: 24px;
     }
+
     @media print {
-      body * { visibility: hidden; }
-      #printable-area, #printable-area * { visibility: visible; }
+      body * {
+        visibility: hidden;
+      }
+      #printable-area, #printable-area * {
+        visibility: visible;
+      }
       #printable-area {
         position: absolute;
         left: 0;
@@ -68,11 +76,14 @@
         padding: 10mm;
         box-shadow: none;
       }
-      .no-print { display: none !important; }
+      .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800">
+
   <header class="bg-indigo-900 text-white px-6 py-3 shadow-md flex flex-wrap items-center justify-between no-print">
     <div class="flex items-center gap-3">
       <div class="bg-amber-400 text-indigo-950 font-bold px-2.5 py-1 rounded text-sm">AI</div>
@@ -82,12 +93,71 @@
       </div>
     </div>
     <div class="flex items-center gap-2 mt-2 sm:mt-0">
+      <button id="subscription-status-badge" type="button" class="bg-white/10 border border-white/20 text-xs px-3 py-2 rounded font-semibold text-indigo-100">
+        Status: Gratis
+      </button>
+      <button type="button" onclick="toggleSubscriptionModal()" class="bg-amber-400 hover:bg-amber-300 text-indigo-900 text-xs px-3 py-2 rounded font-semibold border border-amber-300 transition">
+        💎 Langganan Premium
+      </button>
       <button type="button" onclick="toggleApiModal()" class="bg-indigo-700 hover:bg-indigo-600 text-xs px-3 py-2 rounded font-medium border border-indigo-500 transition">
         🔑 Pengaturan Gemini API Key
       </button>
     </div>
   </header>
 
+  <div id="subscription-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 no-print p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-bold text-xl text-slate-900">Paket Langganan EduPlan AI</h3>
+          <p class="text-xs text-slate-500 mt-1">Akses penuh for guru: generate AI, export PDF, export Word, upload buku referensi.</p>
+        </div>
+        <button type="button" onclick="toggleSubscriptionModal()" class="text-slate-400 hover:text-slate-700 text-xl">×</button>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-slate-800">Free</h4>
+            <span class="text-xs bg-slate-200 px-2 py-1 rounded-full text-slate-700">Rp 0</span>
+          </div>
+          <ul class="text-xs text-slate-600 space-y-2">
+            <li>• Demo cepat</li>
+            <li>• 3 generate AI/bulan</li>
+            <li>• Export terbatas</li>
+          </ul>
+          <button type="button" onclick="activateSubscription('free')" class="mt-4 w-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg">
+            Pakai Mode Gratis
+          </button>
+        </div>
+
+        <div class="border border-indigo-500 rounded-xl p-4 bg-indigo-50">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="font-bold text-indigo-900">Premium</h4>
+            <span class="text-xs bg-indigo-600 px-2 py-1 rounded-full text-white">Rp 149.000/bulan</span>
+          </div>
+          <ul class="text-xs text-indigo-800 space-y-2">
+            <li>• Generate AI tanpa batas</li>
+            <li>• Upload buku dan materi</li>
+            <li>• Export PDF & Word</li>
+            <li>• Akses fitur penuh</li>
+          </ul>
+          <button type="button" onclick="activateSubscription('premium')" class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-lg">
+            Aktifkan Premium Sekarang
+          </button>
+        </div>
+      </div>
+
+      <div class="border border-dashed border-slate-300 rounded-lg p-3 bg-slate-50">
+        <p class="text-[11px] font-semibold text-slate-700 mb-2">Keterangan:</p>
+        <p class="text-[11px] text-slate-600 leading-relaxed">
+          Versi ini adalah <strong>demo berlangganan front-end</strong>. Untuk produksi, ganti tombol di atas dengan checkout Midtrans/Xendit dan simpan status langganan di backend agar aman dan tidak bisa dipalsukan.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Pengaturan API Key -->
   <div id="api-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 no-print p-4">
     <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
       <h3 class="font-bold text-lg text-slate-900 mb-2">Pengaturan Google Gemini API Key</h3>
@@ -104,7 +174,10 @@
     </div>
   </div>
 
+  <!-- Konten Utama -->
   <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- PANEL KIRI: FORM INPUT -->
     <section class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 h-fit no-print">
       <div class="flex items-center justify-between border-b pb-3 mb-4">
         <h2 class="font-bold text-base text-slate-800">1. Data Identitas & Sumber Buku</h2>
@@ -237,6 +310,7 @@
       </form>
     </section>
 
+    <!-- PANEL KANAN: PRATINJAU & TOMBOL CETAK -->
     <section class="lg:col-span-8 flex flex-col">
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-4 flex flex-wrap items-center justify-between gap-2 no-print">
         <div class="flex items-center gap-2">
@@ -281,12 +355,137 @@
 
     let uploadedBookText = "";
     let uploadedBookName = "";
+    const FREE_GENERATIONS_PER_MONTH = 3;
+    const SUBSCRIPTION_KEY = "eduplan_subscription_state";
+
+    function getSubscriptionState() {
+      try {
+        const raw = localStorage.getItem(SUBSCRIPTION_KEY);
+        if (!raw) {
+          return {
+            plan: "free",
+            startedAt: null,
+            expiresAt: null,
+            freeMonthKey: null,
+            freeGenerations: 0
+          };
+        }
+        return JSON.parse(raw);
+      } catch (error) {
+        return {
+          plan: "free",
+          startedAt: null,
+          expiresAt: null,
+          freeMonthKey: null,
+          freeGenerations: 0
+        };
+      }
+    }
+
+    function setSubscriptionState(nextState) {
+      localStorage.setItem(SUBSCRIPTION_KEY, JSON.stringify(nextState));
+    }
+
+    function getCurrentMonthKey() {
+      const d = new Date();
+      return d.getFullYear() + "-" + (d.getMonth() + 1);
+    }
+
+    function isPremiumActive() {
+      const state = getSubscriptionState();
+      if (!state || state.plan !== "premium") return false;
+      if (!state.expiresAt) return false;
+      return Date.now() < Number(state.expiresAt);
+    }
+
+    function ensureFreeCounter() {
+      const state = getSubscriptionState();
+      const monthKey = getCurrentMonthKey();
+      if (state.freeMonthKey !== monthKey) {
+        state.freeMonthKey = monthKey;
+        state.freeGenerations = 0;
+        setSubscriptionState(state);
+      }
+      return getSubscriptionState();
+    }
+
+    function renderSubscriptionStatus() {
+      const badge = document.getElementById("subscription-status-badge");
+      const state = getSubscriptionState();
+      const currentMonth = getCurrentMonthKey();
+      const monthRemaining = isPremiumActive() ? "Unlimited" : Math.max(0, FREE_GENERATIONS_PER_MONTH - (state.freeGenerations || 0));
+
+      if (isPremiumActive()) {
+        badge.textContent = "Status: Premium";
+        badge.className = "bg-emerald-500/20 border border-emerald-400 text-xs px-3 py-2 rounded font-semibold text-emerald-100";
+        return;
+      }
+
+      if (state.freeMonthKey && state.freeMonthKey !== currentMonth) {
+        ensureFreeCounter();
+      }
+
+      badge.textContent = "Status: Gratis — " + monthRemaining + " generate tersisa";
+      badge.className = "bg-white/10 border border-white/20 text-xs px-3 py-2 rounded font-semibold text-indigo-100";
+    }
+
+    function toggleSubscriptionModal() {
+      const modal = document.getElementById("subscription-modal");
+      modal.classList.toggle("hidden");
+      modal.classList.toggle("flex");
+    }
+
+    function activateSubscription(plan) {
+      const state = getSubscriptionState();
+      const now = Date.now();
+
+      if (plan === "premium") {
+        state.plan = "premium";
+        state.startedAt = now;
+        state.expiresAt = now + (30 * 24 * 60 * 60 * 1000);
+        state.freeMonthKey = getCurrentMonthKey();
+        state.freeGenerations = 0;
+        setSubscriptionState(state);
+        renderSubscriptionStatus();
+        toggleSubscriptionModal();
+        alert("Langganan Premium berhasil aktif. Anda bisa menggunakan generate AI secara penuh.");
+        return;
+      }
+
+      state.plan = "free";
+      state.startedAt = null;
+      state.expiresAt = null;
+      state.freeMonthKey = getCurrentMonthKey();
+      state.freeGenerations = 0;
+      setSubscriptionState(state);
+      renderSubscriptionStatus();
+      toggleSubscriptionModal();
+      alert("Mode gratis aktif kembali. Anda masih memiliki 3 generate AI per bulan.");
+    }
+
+    function ensureGenerationAccess() {
+      if (isPremiumActive()) return true;
+
+      const state = ensureFreeCounter();
+      if (state.freeGenerations >= FREE_GENERATIONS_PER_MONTH) {
+        renderSubscriptionStatus();
+        toggleSubscriptionModal();
+        alert("Batas generate AI gratis bulan ini sudah tercapai. Aktifkan paket Premium untuk melanjutkan.");
+        return false;
+      }
+
+      state.freeGenerations += 1;
+      setSubscriptionState(state);
+      renderSubscriptionStatus();
+      return true;
+    }
 
     window.addEventListener("DOMContentLoaded", function () {
       const savedKey = localStorage.getItem("gemini_api_key");
       if (savedKey) {
         document.getElementById("gemini-api-key").value = savedKey;
       }
+      renderSubscriptionStatus();
     });
 
     function toggleApiModal() {
@@ -424,6 +623,10 @@
     }
 
     async function generateWithAI() {
+      if (!ensureGenerationAccess()) {
+        return;
+      }
+
       const apiKey = localStorage.getItem("gemini_api_key") || document.getElementById("gemini-api-key").value.trim();
       if (!apiKey) {
         alert("Masukkan Google Gemini API Key terlebih dahulu melalui tombol 'Pengaturan Gemini API Key' di pojok kanan atas, atau gunakan tombol 'Mode Demo Cepat'.");
@@ -594,7 +797,7 @@
                 <td style="text-align:center;">1</td>
                 <td>Pengantar dan Analisis Konsep Dasar ${data.materi}</td>
                 <td style="text-align:center;">12 JP</td>
-                <td>Tatap Muka</td>
+                <td>Tapel Muka</td>
               </tr>
               <tr>
                 <td style="text-align:center;">2</td>
