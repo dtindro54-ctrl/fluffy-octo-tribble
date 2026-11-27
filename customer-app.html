@@ -3,74 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EduPlan AI — Generator Perangkat Ajar</title>
+  <title>EduPlan AI — Generator Perangkat Ajar Kurikulum Merdeka</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./assets/secure-generator-client.js"></script>
+  <style>
+    /* Styling tabel hasil agar rapi saat tampil & dicetak */
+    #result table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+    #result th, #result td { border: 1px solid #cbd5e1; padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
+    #result th { background-color: #f1f5f9; font-weight: 700; }
+    #result h1, #result h2, #result h3 { font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #1e1b4b; }
+    #result h1 { font-size: 1.35rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.25rem; }
+    #result h2 { font-size: 1.15rem; }
+    #result h3 { font-size: 1rem; }
+    #result ul, #result ol { padding-left: 1.25rem; margin: 0.5rem 0; }
+    #result ul { list-style-type: disc; }
+    #result ol { list-style-type: decimal; }
+    @media print {
+      header, #edu-form, #result-toolbar, #partner-banner, footer { display: none !important; }
+      main { max-width: 100% !important; padding: 0 !important; display: block !important; }
+      #result-section { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-slate-100 text-slate-800">
-  <header class="bg-indigo-900 text-white px-4 py-4 flex flex-wrap items-center justify-between gap-3">
-    <div><h1 class="font-bold text-lg">EduPlan AI — Perangkat Ajar</h1><p class="text-xs text-indigo-200">Generator CP, TP, ATP, PROTA, PROSEM & Modul Ajar</p></div>
-    <div class="flex items-center gap-2"><span id="subscription-status-badge" class="text-xs bg-white/10 border border-white/20 px-3 py-2 rounded">Status: memeriksa…</span><a href="./subscription.html" class="bg-amber-400 text-indigo-950 text-xs font-semibold px-3 py-2 rounded">Masuk / Langganan</a></div>
+<body class="min-h-screen bg-slate-100 text-slate-800 flex flex-col">
+  <header class="bg-indigo-900 text-white px-4 py-4 shadow-sm">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="font-bold text-lg">EduPlan AI — Perangkat Ajar</h1>
+        <p class="text-xs text-indigo-200">Generator CP, TP, ATP, PROTA, PROSEM, Modul Ajar & LKPD Lengkap</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span id="subscription-status-badge" class="text-xs bg-white/10 border border-white/20 px-3 py-2 rounded">Status: memeriksa…</span>
+        <a href="./subscription.html" class="bg-amber-400 hover:bg-amber-300 text-indigo-950 text-xs font-bold px-3.5 py-2 rounded shadow-sm">
+          Masuk / Langganan
+        </a>
+      </div>
+    </div>
   </header>
-  <main class="max-w-5xl mx-auto p-4 grid gap-4 md:grid-cols-2">
-    <form id="edu-form" class="bg-white rounded-xl border p-5 space-y-3">
-      <h2 class="font-bold">Data Perangkat Ajar</h2>
-      <label class="block text-sm">Nama sekolah<input id="sekolah" class="mt-1 w-full border rounded px-3 py-2" required value="" /></label>
-      <label class="block text-sm">Tahun ajaran<input id="tahun" class="mt-1 w-full border rounded px-3 py-2" required value="" placeholder="2026/2027" /></label>
-      <label class="block text-sm">Nama guru<input id="guru" class="mt-1 w-full border rounded px-3 py-2" required value="" /></label>
-      <label class="block text-sm">Jenjang / fase<select id="fase" class="mt-1 w-full border rounded px-3 py-2"><option>PAUD (Fase Fondasi)</option><option>SD - Fase A (Kelas 1-2)</option><option>SD - Fase B (Kelas 3-4)</option><option>SD - Fase C (Kelas 5-6)</option><option>SMP - Fase D (Kelas 7-9)</option><option selected>SMA/SMK - Fase E (Kelas 10)</option><option>SMA/SMK - Fase F (Kelas 11-12)</option></select></label>
-      <label class="block text-sm">Semester<select id="semester" class="mt-1 w-full border rounded px-3 py-2"><option>Ganjil</option><option>Genap</option></select></label>
-      <label class="block text-sm">Mata pelajaran & kelas<input id="mapel" class="mt-1 w-full border rounded px-3 py-2" required placeholder="Contoh: Biologi - Kelas X" /></label>
-      <label class="block text-sm">Topik / materi<input id="materi" class="mt-1 w-full border rounded px-3 py-2" required /></label>
-      <label class="block text-sm">Tujuan pembelajaran<textarea id="tujuan" rows="3" class="mt-1 w-full border rounded px-3 py-2" required></textarea></label>
-      <label class="block text-sm">Instruksi tambahan<textarea id="instruksi" rows="3" class="mt-1 w-full border rounded px-3 py-2" placeholder="Contoh: sertakan asesmen dan rubrik"></textarea></label>
-      <button id="generate-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded px-4 py-3" type="submit">✨ Generate Perangkat Ajar</button>
-      <p class="text-xs text-slate-500">Tidak perlu memasukkan Gemini API Key. Permintaan AI diproses dengan aman melalui server.</p>
-      <p id="status" class="hidden rounded p-3 text-sm" role="status"></p>
+
+  <main class="max-w-6xl w-full mx-auto p-4 grid gap-5 lg:grid-cols-12 flex-grow">
+    <!-- Kolom Formulir -->
+    <form id="edu-form" class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3 self-start">
+      <h2 class="font-bold text-base text-slate-900 border-b pb-2">Data Perangkat Ajar</h2>
+      <label class="block text-sm font-medium">Nama sekolah
+        <input id="sekolah" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: SMAN 1 Semarang" />
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block text-sm font-medium">Tahun ajaran
+          <input id="tahun" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required value="2026/2027" />
+        </label>
+        <label class="block text-sm font-medium">Semester
+          <select id="semester" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+            <option>Ganjil</option>
+            <option>Genap</option>
+          </select>
+        </label>
+      </div>
+      <label class="block text-sm font-medium">Nama guru
+        <input id="guru" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Nama lengkap & gelar" />
+      </label>
+      <label class="block text-sm font-medium">Jenjang / fase
+        <select id="fase" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+          <option>PAUD (Fase Fondasi)</option>
+          <option>SD - Fase A (Kelas 1-2)</option>
+          <option>SD - Fase B (Kelas 3-4)</option>
+          <option>SD - Fase C (Kelas 5-6)</option>
+          <option>SMP - Fase D (Kelas 7-9)</option>
+          <option selected>SMA/SMK - Fase E (Kelas 10)</option>
+          <option>SMA/SMK - Fase F (Kelas 11-12)</option>
+        </select>
+      </label>
+      <label class="block text-sm font-medium">Mata pelajaran & kelas
+        <input id="mapel" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: Biologi - Kelas X" />
+      </label>
+      <label class="block text-sm font-medium">Topik / materi pokok
+        <input id="materi" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: Keanekaragaman Hayati" />
+      </label>
+      <label class="block text-sm font-medium">Tujuan pembelajaran
+        <textarea id="tujuan" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Tuliskan tujuan pembelajaran yang ingin dicapai..."></textarea>
+      </label>
+      <label class="block text-sm font-medium">Instruksi tambahan (opsional)
+        <textarea id="instruksi" rows="2" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Alokasi 4 JP (2 pertemuan), model Problem Based Learning, sertakan 10 soal HOTS & rubrik"></textarea>
+      </label>
+
+      <button id="generate-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg px-4 py-3 text-sm shadow-sm transition" type="submit">
+        ✨ Generate Perangkat Ajar Lengkap
+      </button>
+      <p class="text-xs text-slate-500">Permintaan AI diproses otomatis melalui server aman tanpa perlu memasukkan API Key.</p>
+      <p id="status" class="hidden rounded-lg p-3 text-sm" role="status"></p>
     </form>
-    <section class="bg-white rounded-xl border p-5 min-h-96">
-      <div class="flex justify-between items-center gap-2"><h2 class="font-bold">Hasil</h2><button id="print-button" type="button" class="border rounded px-3 py-2 text-sm">Cetak / Simpan PDF</button></div>
-      <article id="result" class="mt-4 prose max-w-none overflow-x-auto"></article>
+
+    <!-- Kolom Hasil -->
+    <section id="result-section" class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-5 min-h-[28rem] flex flex-col">
+      <div id="result-toolbar" class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
+        <h2 class="font-bold text-base text-slate-900">Hasil Perangkat Ajar</h2>
+        <div class="flex flex-wrap gap-2">
+          <button id="download-word-button" type="button" class="bg-sky-600 hover:bg-sky-700 text-white rounded-lg px-3 py-2 text-xs font-semibold">
+            Unduh Word (.doc)
+          </button>
+          <button id="print-button" type="button" class="border border-slate-300 hover:bg-slate-50 rounded-lg px-3 py-2 text-xs font-semibold">
+            Cetak / Simpan PDF
+          </button>
+        </div>
+      </div>
+
+      <article id="result" class="mt-4 prose max-w-none overflow-x-auto text-sm leading-relaxed flex-grow">
+        <p class="text-slate-400 italic">Silakan lengkapi formulir di samping lalu klik "Generate Perangkat Ajar Lengkap". Dokumen lengkap (CP, TP, ATP, PROTA, PROSEM, Modul Ajar, LKPD, dan Soal Asesmen) akan muncul di sini.</p>
+      </article>
+
+      <!-- Slot Banner Mitra / Pengiklan -->
+      <div id="partner-banner" class="mt-6 pt-4 border-t border-dashed border-slate-300">
+        <div class="bg-gradient-to-r from-indigo-50 to-sky-50 border border-indigo-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded">Ruang Mitra & Iklan</span>
+            <p class="text-sm font-bold text-slate-900 mt-1">Promosikan Buku Ajar, Bimbel, atau Webinar Guru di Sini!</p>
+            <p class="text-xs text-slate-600">Jangkau ribuan guru aktif di seluruh Indonesia melalui halaman utama EduPlan AI.</p>
+          </div>
+          <a href="https://wa.me"
+             target="_blank" rel="noopener noreferrer"
+             class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg">
+            Pasang Iklan
+          </a>
+        </div>
+      </div>
     </section>
   </main>
+
+  <footer class="bg-white border-t border-slate-200 mt-8 py-5 px-4 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <p>© 2026 <strong>EduPlan AI</strong> (binamandiri.my.id) — Asisten Perangkat Ajar Guru Indonesia.</p>
+      <div class="flex gap-4">
+        <a href="./subscription.html" class="hover:text-indigo-700 underline">Paket Langganan</a>
+        <a href="https://wa.me." target="_blank" rel="noopener noreferrer" class="hover:text-indigo-700 underline">
+          Kerja Sama & Media Kit
+        </a>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    // These are public Supabase client settings, not secret API keys. Configure before publishing.
+    // Ganti dengan URL dan Anon Key asli dari Dashboard Supabase Anda (Settings -> API)
     window.__EDUPLAN_SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
     window.__EDUPLAN_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
     const form = document.getElementById("edu-form");
     const status = document.getElementById("status");
     const button = document.getElementById("generate-button");
+    const resultEl = document.getElementById("result");
+
     function setStatus(message, isError = false) {
       status.textContent = message;
-      status.className = "rounded p-3 text-sm " + (isError ? "bg-rose-50 text-rose-700" : "bg-indigo-50 text-indigo-800");
+      status.className = "rounded-lg p-3 text-sm " + (isError ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-indigo-50 text-indigo-800 border border-indigo-200");
     }
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) return;
       if (!window.EduPlanSecureGenerate?.generate) {
-        setStatus("Layanan belum siap. Periksa konfigurasi Supabase.", true);
+        setStatus("Layanan belum siap. Periksa konfigurasi Supabase pada halaman ini.", true);
         return;
       }
       button.disabled = true;
-      button.textContent = "⏳ Sedang menyusun…";
-      status.classList.remove("hidden");
-      setStatus("Menghubungi layanan AI yang aman…");
-      const val = (id) => document.getElementById(id).value.trim();
-      const prompt = `Buat perangkat ajar Kurikulum Merdeka dalam HTML terstruktur, tanpa markdown. Sekolah: ${val("sekolah")}. Tahun ajaran: ${val("tahun")}. Guru: ${val("guru")}. Jenjang/fase: ${val("fase")}. Semester: ${val("semester")}. Mata pelajaran dan kelas: ${val("mapel")}. Topik: ${val("materi")}. Tujuan pembelajaran: ${val("tujuan")}. Buat CP, TP, ATP, PROTA, PROSEM, modul ajar, aktivitas pembelajaran dan asesmen yang rinci serta siap digunakan. Instruksi tambahan: ${val("instruksi")}.`;
-      try {
-        const generated = await window.EduPlanSecureGenerate.generate(prompt, { systemPrompt: "Anda ahli penyusunan perangkat ajar Kurikulum Merdeka. Hasilkan HTML aman dan terstruktur." });
-        document.getElementById("result").innerHTML = generated.text || "Tidak ada hasil.";
-        setStatus("Dokumen berhasil dibuat.");
-      } catch (error) {
-        setStatus(error?.message || "Generate gagal. Pastikan sudah masuk dan konfigurasi server tersedia.", true);
-      } finally {
-        button.disabled = false;
-        button.textContent = "✨ Generate Perangkat Ajar";
-      }
-    });
-    document.getElementById("print-button").addEventListener("click", () => window.print());
-  </script>
-</body>
-</html>
