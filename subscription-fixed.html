@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#172554">
+<title>Langganan — EduPlan AI</title>
+<style>
+:root{--navy:#172554;--blue:#4f46e5;--cyan:#0ea5e9;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--bg:#f4f7fb;--white:#fff;--green:#059669;--red:#e11d48}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}.topbar{background:linear-gradient(115deg,#111c4e,#3730a3 60%,#0369a1);color:#fff;padding:18px 22px;box-shadow:0 8px 24px #17255422}
+.top-inner{max-width:1180px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:44px;height:44px;border-radius:14px;background:#ffffff20;border:1px solid #ffffff38;display:grid;place-items:center;font-size:23px}
+.brand h1{font-size:20px;line-height:1.2;margin:0;font-weight:800;letter-spacing:-.4px}.brand p{margin:5px 0 0;color:#dbeafe;font-size:12px}
+.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.pill{border:1px solid #ffffff40;background:#ffffff16;border-radius:999px;padding:8px 13px;font-size:12px}
+.wrap{width:min(1180px,calc(100% - 32px));margin:28px auto 44px}.page-intro{margin-bottom:20px}.eyebrow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800;color:#4f46e5}.page-intro h2{font-size:clamp(24px,4vw,34px);line-height:1.18;letter-spacing:-1px;margin:6px 0 8px;color:#111c4e}.page-intro p{margin:0;color:var(--muted);max-width:720px}
+.layout{display:grid;grid-template-columns:minmax(280px, .88fr) minmax(0,1.35fr);gap:20px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 10px 30px #1725540a}.card-head{display:flex;align-items:center;gap:12px;margin-bottom:17px}.card-icon{width:38px;height:38px;border-radius:12px;background:#eef2ff;color:#4338ca;display:grid;place-items:center;font-size:18px}.card h3{font-size:17px;margin:0;color:#172554}.subhead{font-size:12px;color:var(--muted);margin:2px 0 0}
+label{display:block;font-size:13px;font-weight:650;color:#334155;margin:0 0 13px}input,select,textarea{display:block;width:100%;margin-top:6px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:11px 12px;font:inherit;font-size:14px;color:#172033;outline:none;transition:.18s}input:focus,select:focus,textarea:focus{border-color:#6366f1;box-shadow:0 0 0 3px #6366f11c}textarea{resize:vertical;min-height:86px}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;border:0;border-radius:11px;padding:11px 16px;font:inherit;font-weight:750;font-size:13px;text-decoration:none;cursor:pointer;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(1.05);transform:translateY(-1px)}.btn:disabled{opacity:.6;cursor:wait;transform:none}.btn-primary{background:linear-gradient(110deg,#4f46e5,#2563eb);color:#fff;box-shadow:0 6px 16px #4f46e533}.btn-light{background:#eef2ff;color:#3730a3}.btn-outline{border:1px solid var(--line);background:#fff;color:#334155}.btn-block{width:100%}.help{font-size:12px;color:var(--muted);margin:12px 0 0}.notice{padding:12px 14px;border-radius:12px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:13px;margin-top:14px}.notice.error{background:#fff1f2;border-color:#fecdd3;color:#9f1239}.notice.success{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+.result-card{min-height:520px}.result-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:15px}.toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}.empty-state{text-align:center;padding:64px 20px;color:var(--muted)}.empty-icon{font-size:42px;margin-bottom:12px}.empty-state h4{font-size:17px;color:#334155;margin:0 0 6px}.empty-state p{font-size:13px;max-width:360px;margin:auto}
+#result{overflow-wrap:anywhere;margin-top:18px;font-size:14px;line-height:1.75}#result h1,#result h2,#result h3{color:#172554;margin:1.25em 0 .5em}#result table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}#result th,#result td{border:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}#result th{background:#eef2ff}
+.banner{margin-top:20px;padding:18px;border-radius:16px;background:linear-gradient(110deg,#eef2ff,#ecfeff);border:1px solid #c7d2fe;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}.banner strong{color:#1e1b4b}.banner p{margin:3px 0 0;font-size:12px;color:#64748b}
+footer{border-top:1px solid var(--line);background:#fff;padding:20px 16px;color:#64748b;font-size:12px}footer .foot-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.plan{position:relative;overflow:hidden}.plan.featured{border:2px solid #6366f1;box-shadow:0 14px 32px #4f46e51a}.plan-tag{display:inline-block;background:#eef2ff;color:#4338ca;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:850;letter-spacing:.8px}.price{font-size:32px;letter-spacing:-1px;font-weight:850;color:#172554;margin:12px 0 3px}.price small{font-size:13px;letter-spacing:0;color:#64748b;font-weight:500}.plan-desc{color:#64748b;font-size:13px;min-height:42px}.plan ul{padding-left:18px;color:#475569;font-size:13px;margin:16px 0}.plan li{margin:6px 0}.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.auth-actions{display:flex;gap:9px;flex-wrap:wrap}.span-all{grid-column:1/-1}.section-gap{margin-top:18px}.method-list{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}.bank{border:1px solid var(--line);background:#f8fafc;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;color:#334155}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.result-card{min-height:350px}.wrap{margin-top:22px}.card{padding:18px}}
+@media(max-width:520px){.topbar{padding:15px}.brand h1{font-size:17px}.wrap{width:calc(100% - 22px)}.field-grid,.plans,.auth-grid{grid-template-columns:1fr}.span-all{grid-column:auto}.card{border-radius:16px;padding:16px}.price{font-size:29px}.toolbar-actions{width:100%}.toolbar-actions .btn{flex:1}}
+@media print{.topbar,footer,.no-print,#edu-form,#result-toolbar,.banner{display:none!important}.wrap{width:100%;margin:0}.layout{display:block}.card{border:0;box-shadow:none;padding:0}#result{font-size:11pt}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="topbar"><div class="top-inner">
+  <div class="brand"><div class="brand-mark">✦</div><div><h1>EduPlan AI</h1><p>Paket akses dan akun pengguna</p></div></div>
+  <div class="top-actions"><a class="pill" href="./customer-app.html">← Kembali ke aplikasi</a></div>
+</div></header>
+<main class="wrap">
+  <div class="page-intro"><div class="eyebrow">Akses premium</div><h2>Pilih paket yang sesuai.</h2><p>Masuk atau buat akun terlebih dahulu untuk melanjutkan pembayaran dan memantau masa aktif langganan Anda.</p></div>
+  <section class="card">
+    <div class="card-head"><div class="card-icon">♙</div><div><h3>Akun EduPlan AI</h3><p class="subhead">Gunakan email aktif untuk akun Anda</p></div></div>
+    <div class="auth-grid">
+      <label>Email<input id="email" type="email" autocomplete="email" placeholder="nama@email.com" required></label>
+      <label>Kata sandi<input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Minimal 8 karakter" required></label>
+      <div class="auth-actions span-all">
+        <button id="sign-in" type="button" class="btn btn-primary">Masuk</button>
+        <button id="sign-up" type="button" class="btn btn-light">Buat akun</button>
+        <button id="sign-out" type="button" class="btn btn-outline" hidden>Keluar</button>
+      </div>
+    </div>
+    <div id="setup-warning" class="notice error" hidden></div><p id="message" role="status" class="notice" hidden></p>
+  </section>
+  <section id="plans" class="plans">
+    <article class="card plan"><span class="plan-tag">FLEKSIBEL</span><h3 style="margin-top:13px">Premium Bulanan</h3><div class="price">Rp199.000<small> / bulan</small></div><p class="plan-desc">Akses Premium selama satu bulan sejak pembayaran berhasil.</p><ul><li>Akses fitur Premium</li><li>Cocok untuk kebutuhan jangka pendek</li><li>Pembayaran melalui Virtual Account</li></ul><button data-plan="monthly" type="button" class="buy-plan btn btn-primary btn-block">Pilih paket bulanan →</button></article>
+    <article class="card plan featured"><span class="plan-tag">HEMAT UNTUK SETAHUN</span><h3 style="margin-top:13px">Premium Tahunan</h3><div class="price">Rp350.000<small> / tahun</small></div><p class="plan-desc">Akses Premium selama satu tahun sejak pembayaran berhasil.</p><ul><li>Akses Premium selama 12 bulan</li><li>Lebih praktis untuk penggunaan rutin</li><li>Pembayaran melalui Virtual Account</li></ul><button data-plan="yearly" type="button" class="buy-plan btn btn-primary btn-block">Pilih paket tahunan →</button></article>
+  </section>
+  <section class="card section-gap">
+    <div class="card-head"><div class="card-icon">▣</div><div><h3>Metode pembayaran</h3><p class="subhead">Virtual Account melalui Xendit</p></div></div>
+    <p style="margin:0;color:#64748b;font-size:13px">Metode bank yang tersedia mengikuti konfigurasi kanal pembayaran pada akun Xendit Anda.</p>
+    <div class="method-list"><span class="bank">BNI</span><span class="bank">BRI</span><span class="bank">Bank Jago</span><span class="bank">Superbank</span></div>
+    <p class="help">Setiap transaksi akan memperoleh instruksi pembayaran/nomor VA unik dari halaman checkout Xendit. Pastikan nama penerima dan detail pembayaran diperiksa pada halaman invoice resmi sebelum membayar.</p>
+  </section>
+  <section class="card section-gap">
+    <div class="result-toolbar"><div><h3>Status langganan</h3><p class="subhead">Periksa masa aktif akun Anda</p></div><button id="refresh-status" type="button" class="btn btn-light">↻ Perbarui status</button></div>
+    <p id="subscription-status" style="margin:14px 0 0;color:#64748b;font-size:13px">Masuk untuk melihat status langganan.</p>
+  </section>
+</main>
+<footer><div class="foot-inner"><span>© 2026 <strong>EduPlan AI</strong>.</span><a href="./customer-app.html">Kembali ke aplikasi</a></div></footer>
+<script>
+/* Gunakan nilai yang SAMA dengan konfigurasi pada customer-app-fixed.html.
+   Hanya gunakan publishable/anon key; jangan pernah expose service_role key. */
+const SUPABASE_URL="GANTI_DENGAN_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY="GANTI_DENGAN_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
+const configured=SUPABASE_URL.startsWith("https://")&&!SUPABASE_URL.includes("GANTI_")&&!SUPABASE_ANON_KEY.includes("GANTI_");
+const warning=document.getElementById("setup-warning"),message=document.getElementById("message"),status=document.getElementById("subscription-status");
+const emailInput=document.getElementById("email"),passwordInput=document.getElementById("password");
+if(!configured){warning.textContent="Konfigurasi Supabase belum diisi. Isi URL proyek dan publishable/anon key yang sama pada kedua file HTML agar login dan status langganan aktif.";warning.hidden=false;}
+const supabase=configured&&window.supabase?.createClient?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+function setMessage(text,isError=false){message.hidden=false;message.textContent=text;message.className="notice"+(isError?" error":" success");}
+function requireSupabase(){if(supabase)return true;setMessage("Fitur akun belum aktif. Pengelola perlu mengisi konfigurasi Supabase terlebih dahulu.",true);return false;}
+async function refreshSessionUI(){
+  if(!supabase){status.textContent="Status belum tersedia karena konfigurasi Supabase belum diisi.";return;}
+  try{
+    const {data:{session},error:sessionError}=await supabase.auth.getSession();
+    if(sessionError)throw sessionError;
+    document.getElementById("sign-in").hidden=!!session;
+    document.getElementById("sign-up").hidden=!!session;
+    document.getElementById("sign-out").hidden=!session;
+    if(!session){status.textContent="Masuk untuk melihat status langganan.";return;}
+    emailInput.value=session.user.email||"";
+    const {data,error}=await supabase.from("eduplan_subscriptions").select("plan,status,current_period_end").eq("user_id",session.user.id).maybeSingle();
+    if(error)throw error;
+    if(!data||data.status!=="active"||!data.current_period_end||new Date(data.current_period_end)<=new Date()){status.textContent="Belum ada langganan Premium aktif.";return;}
+    const planLabel=data.plan==="yearly"?"Tahunan":"Bulanan";
+    status.textContent="Premium "+planLabel+" aktif sampai "+new Date(data.current_period_end).toLocaleString("id-ID")+".";
+  }catch(err){status.textContent="Tidak dapat memuat status: "+(err.message||"Kesalahan tidak diketahui");}
+}
+document.getElementById("sign-in").addEventListener("click",async()=>{
+  if(!requireSupabase())return;
+  if(!emailInput.value.trim()||!passwordInput.value){setMessage("Masukkan email dan kata sandi.",true);return;}
+  const {error}=await supabase.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
+  setMessage(error?error.message:"Berhasil masuk.",!!error);await refreshSessionUI();
+});
+document.getElementById("sign-up").addEventListener("click",async()=>{
+  if(!requireSupabase())return;
+  if(!emailInput.value.trim()||passwordInput.value.length<8){setMessage("Masukkan email dan kata sandi minimal 8 karakter.",true);return;}
+  const {data,error}=await supabase.auth.signUp({email:emailInput.value.trim(),password:passwordInput.value});
+  setMessage(error?error.message:(data.session?"Akun berhasil dibuat dan Anda sudah masuk.":"Akun dibuat. Periksa email untuk konfirmasi, lalu masuk."),!!error);await refreshSessionUI();
+});
+document.getElementById("sign-out").addEventListener("click",async()=>{
+  if(!requireSupabase())return;const {error}=await supabase.auth.signOut();setMessage(error?error.message:"Anda sudah keluar.",!!error);await refreshSessionUI();
+});
+document.querySelectorAll(".buy-plan").forEach(button=>button.addEventListener("click",async()=>{
+  if(!requireSupabase())return;
+  const {data:{session}}=await supabase.auth.getSession();
+  if(!session){setMessage("Masuk atau buat akun dahulu sebelum membayar.",true);emailInput.focus();return;}
+  button.disabled=true;button.textContent="Menyiapkan pembayaran…";
+  try{
+    const {data,error}=await supabase.functions.invoke("create-xendit-invoice",{body:{plan:button.dataset.plan}});
+    if(error)throw error;if(!data?.invoice_url)throw new Error("Tautan pembayaran tidak tersedia.");
+    window.location.assign(data.invoice_url);
+  }catch(err){setMessage(err.message||"Gagal membuat pembayaran.",true);button.disabled=false;button.textContent=button.dataset.plan==="yearly"?"Pilih paket tahunan →":"Pilih paket bulanan →";}
+}));
+document.getElementById("refresh-status").addEventListener("click",refreshSessionUI);
+if(supabase){
+  supabase.auth.onAuthStateChange(()=>{refreshSessionUI();});
+  const params=new URLSearchParams(location.search);
+  if(params.get("payment")==="success")setMessage("Pembayaran sedang diverifikasi Xendit. Perbarui status beberapa saat lagi.");
+  else if(params.get("payment")==="failed")setMessage("Pembayaran belum berhasil. Anda dapat mencoba checkout kembali.",true);
+}
+refreshSessionUI();
+</script>
+</body></html>
