@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Langganan EduPlan AI</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://tailwindcss.com"></script>
+  <script src="https://jsdelivr.net"></script>
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800">
   <main class="max-w-3xl mx-auto p-5 md:p-10">
-    <a class="text-sm text-indigo-700 hover:underline" href="./index.html">← Kembali ke EduPlan AI</a>
+    <a class="text-sm text-indigo-700 hover:underline" href="./customer-app.html">← Kembali ke EduPlan AI</a>
 
-    <!-- Bagian Akun -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
       <h1 class="text-2xl font-bold">Langganan EduPlan AI</h1>
       <p class="text-sm text-slate-600 mt-2">
@@ -36,7 +35,6 @@
       <p id="message" role="status" class="text-sm mt-4"></p>
     </section>
 
-    <!-- Pilihan Paket -->
     <section id="plans" class="grid md:grid-cols-2 gap-4 mt-5">
       <article class="bg-white rounded-2xl shadow-sm border p-5 flex flex-col justify-between">
         <div>
@@ -64,7 +62,6 @@
       </article>
     </section>
 
-    <!-- Informasi Pembayaran Langsung DANA -->
     <section id="payment-box" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
       <h2 class="font-bold text-lg text-slate-900">Metode Pembayaran Langsung (DANA)</h2>
       <p class="text-sm text-slate-600 mt-1">Silakan transfer sesuai nominal paket yang dipilih ke rekening DANA resmi berikut:</p>
@@ -86,14 +83,13 @@
         <p class="text-xs text-slate-500 mb-3">
           Setelah melakukan transfer, klik tombol di bawah ini untuk mengirim bukti transfer ke WhatsApp Admin agar akun Anda segera diaktifkan.
         </p>
-        <a id="wa-confirm-btn" href="https://wa.me." target="_blank" rel="noopener noreferrer"
+        <a id="wa-confirm-btn" href="https://wa.me" target="_blank" rel="noopener noreferrer"
            class="inline-flex items-center justify-center w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-3 text-sm font-semibold shadow-sm">
           Konfirmasi Pembayaran via WhatsApp (082282328532)
         </a>
       </div>
     </section>
 
-    <!-- Status Langganan -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
       <div class="flex flex-wrap justify-between items-center gap-2">
         <h2 class="font-bold">Status langganan</h2>
@@ -104,15 +100,14 @@
   </main>
 
   <script>
-    // Ganti dengan URL dan Anon Key Supabase milik Anda (sama seperti di index.html / customer-app.html)
-    const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const SUPABASE_URL = "https://supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_Sse5IFRd0uhuby4jRBsF7A_xIVVPeI7";
     const WA_ADMIN = "6282282328532";
 
-    const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
+    const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_ANON_KEY.includes("YOUR_");
     const warning = document.getElementById("setup-warning");
     if (!configured) {
-      warning.textContent = "Catatan: URL Supabase dan anon/public key belum diisi pada file ini. Pembayaran DANA dan konfirmasi WhatsApp tetap dapat digunakan.";
+      warning.textContent = "Catatan: API Key Supabase belum diisi pada file ini.";
       warning.classList.remove("hidden");
     }
 
@@ -140,11 +135,10 @@
 
     function requireSupabase() {
       if (supabase) return true;
-      setMessage("Konfigurasi Supabase belum diisi pada file subscription.html.", true);
+      setMessage("Konfigurasi API Key Supabase belum diisi.", true);
       return false;
     }
 
-    // Tombol salin nomor DANA
     document.getElementById("copy-dana").addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText("082282328632");
@@ -154,7 +148,6 @@
       }
     });
 
-    // Pilih paket Bulanan / Tahunan
     document.querySelectorAll(".select-plan").forEach((btn) => {
       btn.addEventListener("click", () => {
         chosenPlan = btn.dataset.plan;
@@ -170,10 +163,26 @@
 
     async function refreshSessionUI() {
       if (!supabase) {
-        status.textContent = "Status langganan otomatis belum aktif karena konfigurasi Supabase belum diisi.";
+        status.textContent = "Status langganan otomatis belum aktif karena API Key Supabase belum diisi.";
         return;
       }
       const { data: { session } } = await supabase.auth.getSession();
       document.getElementById("sign-in").classList.toggle("hidden", !!session);
       document.getElementById("sign-up").classList.toggle("hidden", !!session);
       document.getElementById("sign-out").classList.toggle("hidden", !session);
+
+      if (!session) {
+        status.textContent = "Masuk untuk melihat status.";
+        return;
+      }
+      emailInput.value = session.user.email || "";
+      updateWhatsAppLink();
+
+      const { data, error } = await supabase.from("eduplan_subscriptions")
+        .select("plan,status,current_period_end")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (error) {
+        status.textContent = "Gagal membaca status langganan: " + error.message;
+        return;
