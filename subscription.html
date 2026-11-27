@@ -10,53 +10,90 @@
 <body class="min-h-screen bg-slate-100 text-slate-800">
   <main class="max-w-3xl mx-auto p-5 md:p-10">
     <a class="text-sm text-indigo-700 hover:underline" href="./index.html">← Kembali ke EduPlan AI</a>
+
+    <!-- Bagian Akun -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
       <h1 class="text-2xl font-bold">Langganan EduPlan AI</h1>
-      <p class="text-sm text-slate-600 mt-2">Pilih paketmu, lalu bayar melalui Virtual Account Xendit. Pembayaran hanya via VA, dengan nama rekening <strong>Indro DT Karyanto</strong>.</p>
+      <p class="text-sm text-slate-600 mt-2">
+        Masuk atau buat akun terlebih dahulu, lalu lakukan pembayaran langsung via <strong>DANA</strong> dan konfirmasi melalui WhatsApp untuk aktivasi cepat.
+      </p>
+
       <div id="setup-warning" class="hidden bg-amber-50 border border-amber-300 text-amber-900 rounded-lg p-3 mt-4 text-sm"></div>
+
       <div id="auth-panel" class="grid md:grid-cols-2 gap-3 mt-5">
         <label class="text-sm">Email
-          <input id="email" type="email" autocomplete="email" class="block w-full border rounded-lg p-2 mt-1" required />
+          <input id="email" type="email" autocomplete="email" placeholder="nama@email.com" class="block w-full border rounded-lg p-2 mt-1" required />
         </label>
         <label class="text-sm">Kata sandi
-          <input id="password" type="password" autocomplete="current-password" minlength="8" class="block w-full border rounded-lg p-2 mt-1" required />
+          <input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="Minimal 8 karakter" class="block w-full border rounded-lg p-2 mt-1" required />
         </label>
         <div class="md:col-span-2 flex flex-wrap gap-2">
-          <button id="sign-in" type="button" class="bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-semibold">Masuk</button>
-          <button id="sign-up" type="button" class="bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Buat akun</button>
-          <button id="sign-out" type="button" class="hidden bg-slate-200 rounded-lg px-4 py-2 text-sm font-semibold">Keluar</button>
+          <button id="sign-in" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold">Masuk</button>
+          <button id="sign-up" type="button" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-4 py-2 text-sm font-semibold">Buat akun</button>
+          <button id="sign-out" type="button" class="hidden bg-slate-200 hover:bg-slate-300 rounded-lg px-4 py-2 text-sm font-semibold">Keluar</button>
         </div>
       </div>
       <p id="message" role="status" class="text-sm mt-4"></p>
     </section>
 
+    <!-- Pilihan Paket -->
     <section id="plans" class="grid md:grid-cols-2 gap-4 mt-5">
-      <article class="bg-white rounded-2xl shadow-sm border p-5">
-        <p class="text-sm font-semibold text-slate-500">PREMIUM BULANAN</p>
-        <p class="text-3xl font-bold mt-2">Rp199.000<span class="text-sm font-normal text-slate-500"> / bulan</span></p>
-        <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu bulan sejak pembayaran berhasil.</p>
-        <button data-plan="monthly" type="button" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Bulanan</button>
+      <article class="bg-white rounded-2xl shadow-sm border p-5 flex flex-col justify-between">
+        <div>
+          <p class="text-sm font-semibold text-slate-500">PREMIUM BULANAN</p>
+          <p class="text-3xl font-bold mt-2">Rp199.000<span class="text-sm font-normal text-slate-500"> / bulan</span></p>
+          <p class="text-sm text-slate-600 mt-2">Akses penuh semua fitur EduPlan AI tanpa batas selama 30 hari.</p>
+        </div>
+        <button data-plan="Bulanan" data-price="Rp199.000" type="button" class="select-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">
+          Pilih Paket Bulanan
+        </button>
       </article>
-      <article class="bg-white rounded-2xl shadow-sm border border-indigo-300 p-5">
-        <p class="text-sm font-semibold text-indigo-600">PREMIUM TAHUNAN</p>
-        <p class="text-3xl font-bold mt-2">Rp350.000<span class="text-sm font-normal text-slate-500"> / tahun</span></p>
-        <p class="text-sm text-slate-600 mt-2">Akses Premium selama satu tahun sejak pembayaran berhasil.</p>
-        <button data-plan="yearly" type="button" class="buy-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">Bayar via VA — Tahunan</button>
+
+      <article class="bg-white rounded-2xl shadow-sm border-2 border-indigo-400 p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center">
+            <p class="text-sm font-semibold text-indigo-600">PREMIUM TAHUNAN</p>
+            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded-full">Hemat 85%</span>
+          </div>
+          <p class="text-3xl font-bold mt-2">Rp350.000<span class="text-sm font-normal text-slate-500"> / tahun</span></p>
+          <p class="text-sm text-slate-600 mt-2">Akses penuh semua fitur EduPlan AI selama 1 tahun penuh (2 semester).</p>
+        </div>
+        <button data-plan="Tahunan" data-price="Rp350.000" type="button" class="select-plan mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2.5 font-semibold">
+          Pilih Paket Tahunan
+        </button>
       </article>
     </section>
 
-    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
-      <h2 class="font-bold text-lg">Metode pembayaran: Virtual Account (VA) saja</h2>
-      <ul class="text-sm text-slate-600 mt-3 space-y-2">
-        <li>• BNI</li>
-        <li>• BRI</li>
-        <li>• Bank Jago</li>
-        <li>• Superbank</li>
-      </ul>
-      <p class="text-sm text-slate-700 mt-4">Nama rekening penerima: <strong>Indro DT Karyanto</strong></p>
-      <p class="text-xs text-slate-500 mt-2">Pembayaran akan diproses melalui Xendit Invoice untuk nomor VA yang unik per transaksi.</p>
+    <!-- Informasi Pembayaran Langsung DANA -->
+    <section id="payment-box" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-5">
+      <h2 class="font-bold text-lg text-slate-900">Metode Pembayaran Langsung (DANA)</h2>
+      <p class="text-sm text-slate-600 mt-1">Silakan transfer sesuai nominal paket yang dipilih ke rekening DANA resmi berikut:</p>
+
+      <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <span class="inline-block bg-sky-600 text-white text-xs font-bold px-2.5 py-0.5 rounded">DANA</span>
+          <p id="dana-number" class="text-2xl font-bold text-slate-900 mt-1 tracking-wide">082282328632</p>
+          <p class="text-sm text-slate-700">a.n. <strong>Indro DT Karyanto</strong></p>
+        </div>
+        <button id="copy-dana" type="button" class="bg-white hover:bg-sky-100 text-sky-700 border border-sky-300 rounded-lg px-4 py-2 text-sm font-semibold self-start sm:self-center">
+          Salin Nomor DANA
+        </button>
+      </div>
+
+      <div id="selected-summary" class="hidden bg-slate-50 border border-slate-200 rounded-lg p-3 mt-4 text-sm text-slate-700"></div>
+
+      <div class="mt-4">
+        <p class="text-xs text-slate-500 mb-3">
+          Setelah melakukan transfer, klik tombol di bawah ini untuk mengirim bukti transfer ke WhatsApp Admin agar akun Anda segera diaktifkan.
+        </p>
+        <a id="wa-confirm-btn" href="https://wa.me." target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center justify-center w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg px-5 py-3 text-sm font-semibold shadow-sm">
+          Konfirmasi Pembayaran via WhatsApp (082282328532)
+        </a>
+      </div>
     </section>
 
+    <!-- Status Langganan -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mt-5">
       <div class="flex flex-wrap justify-between items-center gap-2">
         <h2 class="font-bold">Status langganan</h2>
@@ -67,12 +104,15 @@
   </main>
 
   <script>
+    // Ganti dengan URL dan Anon Key Supabase milik Anda (sama seperti di index.html / customer-app.html)
     const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
     const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    const WA_ADMIN = "6282282328532";
+
     const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
     const warning = document.getElementById("setup-warning");
     if (!configured) {
-      warning.textContent = "Layanan masuk dan pembayaran belum aktif karena URL Supabase dan anon/public key belum dikonfigurasi oleh pengelola. Tombol tetap bisa diklik untuk menampilkan informasi ini; pelanggan tidak perlu memasukkan API key Gemini.";
+      warning.textContent = "Catatan: URL Supabase dan anon/public key belum diisi pada file ini. Pembayaran DANA dan konfirmasi WhatsApp tetap dapat digunakan.";
       warning.classList.remove("hidden");
     }
 
@@ -81,111 +121,59 @@
     const status = document.getElementById("subscription-status");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const selectedSummary = document.getElementById("selected-summary");
+    const waConfirmBtn = document.getElementById("wa-confirm-btn");
+
+    let chosenPlan = "Bulanan";
+    let chosenPrice = "Rp199.000";
+
+    function updateWhatsAppLink() {
+      const userEmail = emailInput.value.trim() || "(belum diisi)";
+      const text = `Halo Admin EduPlan AI, saya sudah melakukan transfer DANA untuk langganan:\n• Email Akun: ${userEmail}\n• Paket: Premium ${chosenPlan}\n• Nominal: ${chosenPrice}\n\nBerikut saya lampirkan bukti transfernya.`;
+      waConfirmBtn.href = `https://wa.me{WA_ADMIN}?text=${encodeURIComponent(text)}`;
+    }
 
     function setMessage(text, isError) {
       message.textContent = text;
       message.className = "text-sm mt-4 " + (isError ? "text-rose-700" : "text-emerald-700");
     }
+
     function requireSupabase() {
       if (supabase) return true;
-      setMessage("Fitur ini belum aktif: pengelola perlu mengisi URL Supabase dan anon/public key di konfigurasi situs. Jangan masukkan Gemini API Key di sini.", true);
+      setMessage("Konfigurasi Supabase belum diisi pada file subscription.html.", true);
       return false;
     }
 
+    // Tombol salin nomor DANA
+    document.getElementById("copy-dana").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("082282328632");
+        setMessage("Nomor DANA 082282328632 berhasil disalin!", false);
+      } catch {
+        setMessage("Nomor DANA: 082282328632 (silakan salin secara manual).", false);
+      }
+    });
+
+    // Pilih paket Bulanan / Tahunan
+    document.querySelectorAll(".select-plan").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        chosenPlan = btn.dataset.plan;
+        chosenPrice = btn.dataset.price;
+        selectedSummary.innerHTML = `Paket dipilih: <strong>Premium ${chosenPlan} (${chosenPrice})</strong>. Silakan transfer ke DANA <strong>082282328632</strong> lalu klik tombol WhatsApp di bawah.`;
+        selectedSummary.classList.remove("hidden");
+        updateWhatsAppLink();
+        document.getElementById("payment-box").scrollIntoView({ behavior: "smooth" });
+      });
+    });
+
+    emailInput.addEventListener("input", updateWhatsAppLink);
+
     async function refreshSessionUI() {
       if (!supabase) {
-        status.textContent = "Status langganan belum tersedia karena konfigurasi layanan belum diisi.";
+        status.textContent = "Status langganan otomatis belum aktif karena konfigurasi Supabase belum diisi.";
         return;
       }
       const { data: { session } } = await supabase.auth.getSession();
       document.getElementById("sign-in").classList.toggle("hidden", !!session);
       document.getElementById("sign-up").classList.toggle("hidden", !!session);
       document.getElementById("sign-out").classList.toggle("hidden", !session);
-      if (!session) {
-        status.textContent = "Masuk untuk melihat status.";
-        return;
-      }
-      emailInput.value = session.user.email || "";
-      const { data, error } = await supabase.from("eduplan_subscriptions")
-        .select("plan,status,current_period_end")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
-      if (error) {
-        status.textContent = "Gagal membaca status langganan: " + error.message;
-        return;
-      }
-      if (!data || data.status !== "active" || new Date(data.current_period_end) <= new Date()) {
-        status.textContent = "Belum ada langganan Premium aktif.";
-        return;
-      }
-      const planLabel = data.plan === "yearly" ? "Tahunan" : "Bulanan";
-      status.textContent = "Premium " + planLabel + " aktif sampai " + new Date(data.current_period_end).toLocaleString("id-ID") + ".";
-    }
-
-    document.getElementById("sign-in").addEventListener("click", async () => {
-      if (!requireSupabase()) return;
-      const { error } = await supabase.auth.signInWithPassword({ email: emailInput.value.trim(), password: passwordInput.value });
-      setMessage(error ? error.message : "Berhasil masuk.", !!error);
-      await refreshSessionUI();
-    });
-
-    document.getElementById("sign-up").addEventListener("click", async () => {
-      if (!requireSupabase()) return;
-      const { data, error } = await supabase.auth.signUp({ email: emailInput.value.trim(), password: passwordInput.value });
-      setMessage(error ? error.message : (data.session ? "Akun dibuat dan Anda sudah masuk." : "Akun dibuat. Periksa email untuk konfirmasi, lalu masuk."), !!error);
-      await refreshSessionUI();
-    });
-
-    document.getElementById("sign-out").addEventListener("click", async () => {
-      if (!requireSupabase()) return;
-      const { error } = await supabase.auth.signOut();
-      setMessage(error ? error.message : "Anda sudah keluar.", !!error);
-      await refreshSessionUI();
-    });
-
-    document.querySelectorAll(".buy-plan").forEach((button) => {
-      button.addEventListener("click", async () => {
-        if (!requireSupabase()) return;
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          setMessage("Masuk atau buat akun dahulu sebelum membayar.", true);
-          emailInput.focus();
-          return;
-        }
-        button.disabled = true;
-        try {
-          const { data, error } = await supabase.functions.invoke("create-xendit-invoice", {
-            body: { plan: button.dataset.plan },
-          });
-          if (error) throw error;
-          if (!data || !data.invoice_url) throw new Error("Tautan pembayaran tidak tersedia.");
-          window.location.assign(data.invoice_url);
-        } catch (error) {
-          setMessage(error.message || "Gagal membuat pembayaran.", true);
-          button.disabled = false;
-        }
-      });
-    });
-
-    document.getElementById("refresh-status").addEventListener("click", async () => {
-      if (!requireSupabase()) {
-        await refreshSessionUI();
-        return;
-      }
-      await refreshSessionUI();
-    });
-    if (supabase) {
-      supabase.auth.onAuthStateChange(() => { refreshSessionUI(); });
-      refreshSessionUI();
-      const params = new URLSearchParams(location.search);
-      if (params.get("payment") === "success") {
-        setMessage("Pembayaran sedang diverifikasi Xendit. Tekan Perbarui status beberapa saat lagi.", false);
-      } else if (params.get("payment") === "failed") {
-        setMessage("Pembayaran belum berhasil. Anda dapat mencoba checkout kembali.", true);
-      }
-    } else {
-      refreshSessionUI();
-    }
-  </script>
-</body>
-</html>
