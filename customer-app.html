@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPlan AI — Generator Perangkat Ajar Kurikulum Merdeka</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://tailwindcss.com"></script>
+  <script src="https://jsdelivr.net"></script>
   <script src="./assets/secure-generator-client.js"></script>
   <style>
-    /* Styling tabel hasil agar rapi saat tampil & dicetak */
     #result table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
     #result th, #result td { border: 1px solid #cbd5e1; padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
     #result th { background-color: #f1f5f9; font-weight: 700; }
@@ -43,7 +42,6 @@
   </header>
 
   <main class="max-w-6xl w-full mx-auto p-4 grid gap-5 lg:grid-cols-12 flex-grow">
-    <!-- Kolom Formulir -->
     <form id="edu-form" class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3 self-start">
       <h2 class="font-bold text-base text-slate-900 border-b pb-2">Data Perangkat Ajar</h2>
       <label class="block text-sm font-medium">Nama sekolah
@@ -94,7 +92,6 @@
       <p id="status" class="hidden rounded-lg p-3 text-sm" role="status"></p>
     </form>
 
-    <!-- Kolom Hasil -->
     <section id="result-section" class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-5 min-h-[28rem] flex flex-col">
       <div id="result-toolbar" class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
         <h2 class="font-bold text-base text-slate-900">Hasil Perangkat Ajar</h2>
@@ -112,7 +109,6 @@
         <p class="text-slate-400 italic">Silakan lengkapi formulir di samping lalu klik "Generate Perangkat Ajar Lengkap". Dokumen lengkap (CP, TP, ATP, PROTA, PROSEM, Modul Ajar, LKPD, dan Soal Asesmen) akan muncul di sini.</p>
       </article>
 
-      <!-- Slot Banner Mitra / Pengiklan -->
       <div id="partner-banner" class="mt-6 pt-4 border-t border-dashed border-slate-300">
         <div class="bg-gradient-to-r from-indigo-50 to-sky-50 border border-indigo-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
@@ -135,7 +131,8 @@
       <p>© 2026 <strong>EduPlan AI</strong> (binamandiri.my.id) — Asisten Perangkat Ajar Guru Indonesia.</p>
       <div class="flex gap-4">
         <a href="./subscription.html" class="hover:text-indigo-700 underline">Paket Langganan</a>
-        <a href="https://wa.me." target="_blank" rel="noopener noreferrer" class="hover:text-indigo-700 underline">
+        <a href="https://wa.me."
+           target="_blank" rel="noopener noreferrer" class="hover:text-indigo-700 underline">
           Kerja Sama & Media Kit
         </a>
       </div>
@@ -143,9 +140,8 @@
   </footer>
 
   <script>
-    // Ganti dengan URL dan Anon Key asli dari Dashboard Supabase Anda (Settings -> API)
-    window.__EDUPLAN_SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
-    window.__EDUPLAN_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+    window.__EDUPLAN_SUPABASE_URL = "https://supabase.co";
+    window.__EDUPLAN_SUPABASE_ANON_KEY = "sb_publishable_Sse5IFRd0uhuby4jRBsF7A_xIVVPeI7";
 
     const form = document.getElementById("edu-form");
     const status = document.getElementById("status");
@@ -165,3 +161,7 @@
         return;
       }
       button.disabled = true;
+      button.textContent = "⏳ Sedang menyusun dokumen lengkap (mohon tunggu 15–30 detik)…";
+      status.classList.remove("hidden");
+      setStatus("Menyusun CP, TP, ATP, PROTA, PROSEM, Modul Ajar, LKPD, dan Asesmen lengkap…");
+
