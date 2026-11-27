@@ -4,164 +4,590 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduPlan AI — Generator Perangkat Ajar Kurikulum Merdeka</title>
-  <script src="https://tailwindcss.com"></script>
-  <script src="https://jsdelivr.net"></script>
-  <script src="./assets/secure-generator-client.js"></script>
   <style>
-    #result table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
-    #result th, #result td { border: 1px solid #cbd5e1; padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
-    #result th { background-color: #f1f5f9; font-weight: 700; }
-    #result h1, #result h2, #result h3 { font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #1e1b4b; }
-    #result h1 { font-size: 1.35rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.25rem; }
-    #result h2 { font-size: 1.15rem; }
-    #result h3 { font-size: 1rem; }
-    #result ul, #result ol { padding-left: 1.25rem; margin: 0.5rem 0; }
-    #result ul { list-style-type: disc; }
-    #result ol { list-style-type: decimal; }
-    @media print {
-      header, #edu-form, #result-toolbar, #partner-banner, footer { display: none !important; }
-      main { max-width: 100% !important; padding: 0 !important; display: block !important; }
-      #result-section { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --secondary: #0f172a;
+      --accent: #f59e0b;
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--secondary);
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status-badge {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      background-color: #fef3c7;
+      color: #92400e;
+      font-weight: 500;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background-color: #ffffff;
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .btn-lg {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Main Grid Layout */
+    .main-container {
+      max-width: 1280px;
+      margin: 1.75rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      background-color: #ffffff;
+    }
+
+    .card-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* Form Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 540px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.65rem 0.875rem;
+      font-size: 0.925rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    .helper-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.65rem;
+      text-align: center;
+    }
+
+    /* Output Area */
+    .toolbar-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .output-box {
+      min-height: 460px;
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .output-box.has-content {
+      display: block;
+      text-align: left;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      background-color: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .output-box h3 {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .output-box p {
+      font-size: 0.875rem;
+      max-width: 420px;
+    }
+
+    .doc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 1.1rem;
+    }
+
+    .doc-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+    }
+
+    /* Partner Banner */
+    .partner-banner {
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #ffffff;
+      border-radius: var(--radius);
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .partner-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+      background-color: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    .partner-banner h4 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .partner-banner p {
+      font-size: 0.825rem;
+      color: #cbd5e1;
+    }
+
+    .btn-accent {
+      background-color: var(--accent);
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .btn-accent:hover {
+      background-color: #d97706;
+      color: #ffffff;
+    }
+
+    /* Footer */
+    .footer {
+      max-width: 1280px;
+      margin: 2.5rem auto 1.5rem;
+      padding: 1.25rem 1.5rem 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .footer-links a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
-<body class="min-h-screen bg-slate-100 text-slate-800 flex flex-col">
-  <header class="bg-indigo-900 text-white px-4 py-4 shadow-sm">
-    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="font-bold text-lg">EduPlan AI — Perangkat Ajar</h1>
-        <p class="text-xs text-indigo-200">Generator CP, TP, ATP, PROTA, PROSEM, Modul Ajar & LKPD Lengkap</p>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <span id="subscription-status-badge" class="text-xs bg-white/10 border border-white/20 px-3 py-2 rounded">Status: memeriksa…</span>
-        <a href="./subscription.html" class="bg-amber-400 hover:bg-amber-300 text-indigo-950 text-xs font-bold px-3.5 py-2 rounded shadow-sm">
-          Masuk / Langganan
-        </a>
+<body>
+
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">EP</div>
+        <div class="brand-text">
+          <h1>EduPlan AI — Perangkat Ajar</h1>
+          <span>Generator CP, TP, ATP, PROTA, PROSEM, Modul Ajar &amp; LKPD Lengkap</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <span class="status-badge" id="authStatus">Status: Belum Masuk</span>
+        <a href="subscription.html" class="btn btn-outline">Masuk</a>
+        <a href="subscription.html" class="btn btn-primary">Langganan</a>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl w-full mx-auto p-4 grid gap-5 lg:grid-cols-12 flex-grow">
-    <form id="edu-form" class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3 self-start">
-      <h2 class="font-bold text-base text-slate-900 border-b pb-2">Data Perangkat Ajar</h2>
-      <label class="block text-sm font-medium">Nama sekolah
-        <input id="sekolah" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: SMAN 1 Semarang" />
-      </label>
-      <div class="grid grid-cols-2 gap-3">
-        <label class="block text-sm font-medium">Tahun ajaran
-          <input id="tahun" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required value="2026/2027" />
-        </label>
-        <label class="block text-sm font-medium">Semester
-          <select id="semester" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-            <option>Ganjil</option>
-            <option>Genap</option>
-          </select>
-        </label>
+  <!-- Main Workspace -->
+  <main class="main-container">
+    
+    <!-- Kolom Kiri: Formulir Input -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Data Perangkat Ajar</h2>
       </div>
-      <label class="block text-sm font-medium">Nama guru
-        <input id="guru" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Nama lengkap & gelar" />
-      </label>
-      <label class="block text-sm font-medium">Jenjang / fase
-        <select id="fase" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-          <option>PAUD (Fase Fondasi)</option>
-          <option>SD - Fase A (Kelas 1-2)</option>
-          <option>SD - Fase B (Kelas 3-4)</option>
-          <option>SD - Fase C (Kelas 5-6)</option>
-          <option>SMP - Fase D (Kelas 7-9)</option>
-          <option selected>SMA/SMK - Fase E (Kelas 10)</option>
-          <option>SMA/SMK - Fase F (Kelas 11-12)</option>
-        </select>
-      </label>
-      <label class="block text-sm font-medium">Mata pelajaran & kelas
-        <input id="mapel" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: Biologi - Kelas X" />
-      </label>
-      <label class="block text-sm font-medium">Topik / materi pokok
-        <input id="materi" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Contoh: Keanekaragaman Hayati" />
-      </label>
-      <label class="block text-sm font-medium">Tujuan pembelajaran
-        <textarea id="tujuan" rows="3" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" required placeholder="Tuliskan tujuan pembelajaran yang ingin dicapai..."></textarea>
-      </label>
-      <label class="block text-sm font-medium">Instruksi tambahan (opsional)
-        <textarea id="instruksi" rows="2" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Alokasi 4 JP (2 pertemuan), model Problem Based Learning, sertakan 10 soal HOTS & rubrik"></textarea>
-      </label>
+      <div class="card-body">
+        <form id="eduplanForm" onsubmit="handleGenerate(event)">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="namaSekolah">Nama Sekolah</label>
+              <input type="text" id="namaSekolah" placeholder="Contoh: SMAN 1 Semarang" required />
+            </div>
 
-      <button id="generate-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg px-4 py-3 text-sm shadow-sm transition" type="submit">
-        ✨ Generate Perangkat Ajar Lengkap
-      </button>
-      <p class="text-xs text-slate-500">Permintaan AI diproses otomatis melalui server aman tanpa perlu memasukkan API Key.</p>
-      <p id="status" class="hidden rounded-lg p-3 text-sm" role="status"></p>
-    </form>
+            <div class="form-group">
+              <label for="tahunAjaran">Tahun Ajaran</label>
+              <input type="text" id="tahunAjaran" value="2026/2027" required />
+            </div>
 
-    <section id="result-section" class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-5 min-h-[28rem] flex flex-col">
-      <div id="result-toolbar" class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">
-        <h2 class="font-bold text-base text-slate-900">Hasil Perangkat Ajar</h2>
-        <div class="flex flex-wrap gap-2">
-          <button id="download-word-button" type="button" class="bg-sky-600 hover:bg-sky-700 text-white rounded-lg px-3 py-2 text-xs font-semibold">
-            Unduh Word (.doc)
-          </button>
-          <button id="print-button" type="button" class="border border-slate-300 hover:bg-slate-50 rounded-lg px-3 py-2 text-xs font-semibold">
-            Cetak / Simpan PDF
-          </button>
-        </div>
-      </div>
+            <div class="form-group">
+              <label for="semester">Semester</label>
+              <select id="semester">
+                <option value="Ganjil">Ganjil</option>
+                <option value="Genap">Genap</option>
+              </select>
+            </div>
 
-      <article id="result" class="mt-4 prose max-w-none overflow-x-auto text-sm leading-relaxed flex-grow">
-        <p class="text-slate-400 italic">Silakan lengkapi formulir di samping lalu klik "Generate Perangkat Ajar Lengkap". Dokumen lengkap (CP, TP, ATP, PROTA, PROSEM, Modul Ajar, LKPD, dan Soal Asesmen) akan muncul di sini.</p>
-      </article>
+            <div class="form-group">
+              <label for="namaGuru">Nama Guru</label>
+              <input type="text" id="namaGuru" placeholder="Nama lengkap &amp; gelar" required />
+            </div>
 
-      <div id="partner-banner" class="mt-6 pt-4 border-t border-dashed border-slate-300">
-        <div class="bg-gradient-to-r from-indigo-50 to-sky-50 border border-indigo-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-600 text-white px-2 py-0.5 rounded">Ruang Mitra & Iklan</span>
-            <p class="text-sm font-bold text-slate-900 mt-1">Promosikan Buku Ajar, Bimbel, atau Webinar Guru di Sini!</p>
-            <p class="text-xs text-slate-600">Jangkau ribuan guru aktif di seluruh Indonesia melalui halaman utama EduPlan AI.</p>
+            <div class="form-group">
+              <label for="jenjangFase">Jenjang / Fase</label>
+              <select id="jenjangFase">
+                <option value="PAUD (Fase Fondasi)">PAUD (Fase Fondasi)</option>
+                <option value="SD - Fase A (Kelas 1-2)">SD - Fase A (Kelas 1-2)</option>
+                <option value="SD - Fase B (Kelas 3-4)">SD - Fase B (Kelas 3-4)</option>
+                <option value="SD - Fase C (Kelas 5-6)">SD - Fase C (Kelas 5-6)</option>
+                <option value="SMP - Fase D (Kelas 7-9)">SMP - Fase D (Kelas 7-9)</option>
+                <option value="SMA/SMK - Fase E (Kelas 10)" selected>SMA/SMK - Fase E (Kelas 10)</option>
+                <option value="SMA/SMK - Fase F (Kelas 11-12)">SMA/SMK - Fase F (Kelas 11-12)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="mapelKelas">Mata Pelajaran &amp; Kelas</label>
+              <input type="text" id="mapelKelas" placeholder="Contoh: Biologi - Kelas X" required />
+            </div>
+
+            <div class="form-group">
+              <label for="topikMateri">Topik / Materi Pokok</label>
+              <input type="text" id="topikMateri" placeholder="Contoh: Keanekaragaman Hayati" required />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="tujuanPembelajaran">Tujuan Pembelajaran</label>
+              <textarea id="tujuanPembelajaran" placeholder="Tuliskan tujuan pembelajaran yang ingin dicapai..." required></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="instruksiTambahan">Instruksi Tambahan (Opsional)</label>
+              <textarea id="instruksiTambahan" style="min-height: 65px;" placeholder="Contoh: Alokasi 4 JP (2 pertemuan), model Problem Based Learning..."></textarea>
+            </div>
           </div>
-          <a href="https://wa.me"
-             target="_blank" rel="noopener noreferrer"
-             class="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg">
-            Pasang Iklan
-          </a>
-        </div>
+
+          <button type="submit" class="btn btn-primary btn-lg">
+            <span>✨ Generate Perangkat Ajar Lengkap</span>
+          </button>
+          <p class="helper-text">
+            Permintaan AI diproses otomatis melalui server aman tanpa perlu memasukkan API Key.
+          </p>
+        </form>
       </div>
     </section>
+
+    <!-- Kolom Kanan: Hasil Dokumen & Mitra -->
+    <div>
+      <section class="card">
+        <div class="card-header">
+          <h2>Hasil Perangkat Ajar</h2>
+          <div class="toolbar-actions">
+            <button type="button" class="btn btn-outline" onclick="alert('Silakan generate dokumen terlebih dahulu.')">
+              Unduh Word (.doc)
+            </button>
+            <button type="button" class="btn btn-outline" onclick="window.print()">
+              Cetak / Simpan PDF
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="output-box" id="outputArea">
+            <div class="empty-icon">📄</div>
+            <h3>Belum Ada Dokumen Dibuat</h3>
+            <p>
+              Silakan lengkapi formulir di samping lalu klik <strong>"Generate Perangkat Ajar Lengkap"</strong>. Dokumen akan otomatis disusun di area ini.
+            </p>
+            <div class="doc-tags">
+              <span class="doc-tag">CP</span>
+              <span class="doc-tag">TP</span>
+              <span class="doc-tag">ATP</span>
+              <span class="doc-tag">PROTA</span>
+              <span class="doc-tag">PROSEM</span>
+              <span class="doc-tag">Modul Ajar</span>
+              <span class="doc-tag">LKPD</span>
+              <span class="doc-tag">Soal Asesmen</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ruang Mitra & Iklan -->
+      <aside class="partner-banner">
+        <div>
+          <span class="partner-badge">Ruang Mitra &amp; Iklan</span>
+          <h4>Promosikan Buku Ajar, Bimbel, atau Webinar Guru di Sini!</h4>
+          <p>Jangkau ribuan guru aktif di seluruh Indonesia melalui halaman utama EduPlan AI.</p>
+        </div>
+        <a href="subscription.html" class="btn btn-accent">Pasang Iklan</a>
+      </aside>
+    </div>
+
   </main>
 
-  <footer class="bg-white border-t border-slate-200 mt-8 py-5 px-4 text-xs text-slate-500">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-      <p>© 2026 <strong>EduPlan AI</strong> (binamandiri.my.id) — Asisten Perangkat Ajar Guru Indonesia.</p>
-      <div class="flex gap-4">
-        <a href="./subscription.html" class="hover:text-indigo-700 underline">Paket Langganan</a>
-        <a href="https://wa.me."
-           target="_blank" rel="noopener noreferrer" class="hover:text-indigo-700 underline">
-          Kerja Sama & Media Kit
-        </a>
-      </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div>&copy; 2026 <strong>EduPlan AI</strong> (binamandiri.my.id) — Asisten Perangkat Ajar Guru Indonesia.</div>
+    <div class="footer-links">
+      <a href="subscription.html">Paket Langganan</a>
+      <a href="subscription.html">Kerja Sama &amp; Media Kit</a>
     </div>
   </footer>
 
   <script>
-    window.__EDUPLAN_SUPABASE_URL = "https://supabase.co";
-    window.__EDUPLAN_SUPABASE_ANON_KEY = "sb_publishable_Sse5IFRd0uhuby4jRBsF7A_xIVVPeI7";
+    function handleGenerate(e) {
+      e.preventDefault();
+      const sekolah = document.getElementById('namaSekolah').value;
+      const guru = document.getElementById('namaGuru').value;
+      const mapel = document.getElementById('mapelKelas').value;
+      const topik = document.getElementById('topikMateri').value;
+      const fase = document.getElementById('jenjangFase').value;
+      const tujuan = document.getElementById('tujuanPembelajaran').value;
 
-    const form = document.getElementById("edu-form");
-    const status = document.getElementById("status");
-    const button = document.getElementById("generate-button");
-    const resultEl = document.getElementById("result");
-
-    function setStatus(message, isError = false) {
-      status.textContent = message;
-      status.className = "rounded-lg p-3 text-sm " + (isError ? "bg-rose-50 text-rose-700 border border-rose-200" : "bg-indigo-50 text-indigo-800 border border-indigo-200");
+      const outputArea = document.getElementById('outputArea');
+      outputArea.classList.add('has-content');
+      outputArea.innerHTML = `
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.75rem; color: #1e293b;">Pratinjau Perangkat Ajar: ${topik}</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.9rem;">
+          <tr><td style="padding: 6px; border: 1px solid #e2e8f0; width: 35%; font-weight: 600;">Sekolah</td><td style="padding: 6px; border: 1px solid #e2e8f0;">${sekolah}</td></tr>
+          <tr><td style="padding: 6px; border: 1px solid #e2e8f0; font-weight: 600;">Nama Guru</td><td style="padding: 6px; border: 1px solid #e2e8f0;">${guru}</td></tr>
+          <tr><td style="padding: 6px; border: 1px solid #e2e8f0; font-weight: 600;">Jenjang / Fase</td><td style="padding: 6px; border: 1px solid #e2e8f0;">${fase}</td></tr>
+          <tr><td style="padding: 6px; border: 1px solid #e2e8f0; font-weight: 600;">Mata Pelajaran</td><td style="padding: 6px; border: 1px solid #e2e8f0;">${mapel}</td></tr>
+        </table>
+        <h4 style="margin-bottom: 0.35rem; color: #2563eb;">Tujuan Pembelajaran</h4>
+        <p style="margin-bottom: 1rem; max-width: 100%;">${tujuan}</p>
+        <div style="padding: 0.85rem; background: #eff6ff; border-radius: 8px; color: #1e40af; font-size: 0.85rem;">
+          <strong>Info:</strong> Hubungkan fungsi ini ke endpoint API Supabase/AI Anda untuk menghasilkan dokumen CP, TP, ATP, Modul Ajar, dan LKPD secara penuh.
+        </div>
+      `;
     }
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-      if (!window.EduPlanSecureGenerate?.generate) {
-        setStatus("Layanan belum siap. Periksa konfigurasi Supabase pada halaman ini.", true);
-        return;
-      }
-      button.disabled = true;
-      button.textContent = "⏳ Sedang menyusun dokumen lengkap (mohon tunggu 15–30 detik)…";
-      status.classList.remove("hidden");
-      setStatus("Menyusun CP, TP, ATP, PROTA, PROSEM, Modul Ajar, LKPD, dan Asesmen lengkap…");
-
+  </script>
+</body>
+</html>
