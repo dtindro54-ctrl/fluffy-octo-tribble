@@ -56,6 +56,21 @@ function sanitizeHtml(html: string): string {
   return template.innerHTML;
 }
 
+const DEFAULT_DETAIL_INSTRUCTION = `
+Anda adalah Pakar Kurikulum Merdeka dan Penyusun Perangkat Ajar Profesional di Indonesia.
+ATURAN PENULISAN WAJIB (SANGAT PENTING):
+1. Tulis seluruh perangkat ajar secara SANGAT PANJANG, MENDALAM, LENGKAP, dan SIAP CETAK. DILARANG meringkas, memotong, atau menggunakan kalimat singkatan seperti "dan seterusnya" atau "sesuaikan dengan kondisi sekolah".
+2. Jabarkan setiap komponen secara utuh dan operasional:
+   - Identitas Lengkap (Satuan Pendidikan, Penyusun, Tahun Ajaran, Jenjang/Fase, Kelas/Semester, Mata Pelajaran, Alokasi Waktu).
+   - Capaian Pembelajaran (CP), Tujuan Pembelajaran (TP) yang terukur (ABCD/KKO Taksonomi Bloom), dan Alur Tujuan Pembelajaran (ATP) dalam bentuk tabel terstruktur.
+   - Program Tahunan (PROTA) & Program Semester (PROSEM) lengkap dengan distribusi alokasi waktu/minggu efektif dalam format tabel HTML rapi.
+   - Modul Ajar Lengkap: Kompetensi Awal, Profil Pelajar Pancasila (jelaskan penerapannya), Sarana & Prasarana, Target Peserta Didik, Model Pembelajaran (misal PBL/PjBL/Discovery Learning).
+   - Langkah Kegiatan Pembelajaran Terperinci per Pertemuan (Pendahuluan, Kegiatan Inti berdasarkan sintaks model pembelajaran secara langkah demi langkah, dan Penutup) beserta estimasi menit di tiap tahapan.
+   - Asesmen Lengkap: Asesmen Diagnostik, Formatif, dan Sumatif beserta instrumen soal (minimal 5-10 soal HOTS pilihan ganda/uraian + kunci jawaban) dan Rubrik Penilaian (tabel kriteria & skor).
+   - Lembar Kerja Peserta Didik (LKPD) lengkap dengan judul, petunjuk kerja, langkah kegiatan siswa, dan tabel/pertanyaan diskusi, serta Bahan Bacaan Guru & Peserta Didik, Glosarium, dan Daftar Pustaka.
+3. Gunakan format HTML murni yang rapi (tag <h1>, <h2>, <h3>, <table>, <thead>, <tbody>, <tr>, <th>, <td>, <ul>, <ol>, <li>, <p>, <strong>) tanpa pembungkus markdown \`\`\`html.
+`.trim();
+
 Deno.serve(async (request) => {
   if (!appOrigin) return json({ error: "APP_ORIGIN secret is required" }, 500);
   if (request.headers.get("origin") && request.headers.get("origin") !== appOrigin) {
@@ -90,13 +105,16 @@ Deno.serve(async (request) => {
   }
 
   const prompt = typeof body.prompt === "string" ? body.prompt.trim() : "";
-  const systemPrompt = typeof body.systemPrompt === "string" ? body.systemPrompt.trim() : "";
+  const clientSystemPrompt = typeof body.systemPrompt === "string" ? body.systemPrompt.trim() : "";
   if (!prompt) return json({ error: "Prompt is required" }, 400);
-  if (prompt.length > 100_000 || systemPrompt.length > 10_000) {
+  if (prompt.length > 100_000 || clientSystemPrompt.length > 10_000) {
     return json({ error: "Prompt is too large" }, 413);
   }
 
-  // Model and resource limits are fixed on the server so clients cannot choose a costlier model/config.
+  const combinedSystemPrompt = clientSystemPrompt
+    ? `${clientSystemPrompt}\n\n${DEFAULT_DETAIL_INSTRUCTION}`
+    : DEFAULT_DETAIL_INSTRUCTION;
+
   const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
   const { data: quotaData, error: quotaError } = await admin.rpc("consume_eduplan_generation", {
     p_user_id: user.id,
@@ -133,11 +151,11 @@ Deno.serve(async (request) => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(90_000),
+        signal: AbortSignal.timeout(120_000),
         body: JSON.stringify({
-          ...(systemPrompt ? { system_instruction: { parts: [{ text: systemPrompt }] } } : {}),
+          system_instruction: { parts: [{ text: combinedSystemPrompt }] },
           contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.4, topP: 0.9, maxOutputTokens: 4000 },
+          generationConfig: { temperature: 0.45, topP: 0.9, maxOutputTokens: 8192 },
         }),
       },
     );
@@ -160,6 +178,7 @@ Deno.serve(async (request) => {
     ok: true,
     text: sanitizeHtml(rawText),
     quota,
-    model: "gemini-3.8-flash",
+    model: "gemini-2.0-flash",
   });
 });
+
